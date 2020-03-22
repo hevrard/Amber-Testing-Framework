@@ -4,25 +4,30 @@
 # -----------------------------------------------------------------------
 import sys
 import re
+from configuration import Configuration
+
+# default Configuration object to be used in the Amber test generation
+default_config = Configuration(timeout=20000, workgroups=65535, threads_per_workgroup=1)
 
 
 # write the necessary "boiler plate" code to generate an amber test, along with a Shader
 # Storage Buffer Object with a memory location, workgroup size, and global variable to
 # assign thread IDs. output is the file being written to and timeout determines (in ms) when the
 # program will terminate in the case the GPU hangs
-def write_amber_prologue(output, timeout):
+def write_amber_prologue(output, timeout, threads_per_workgrup):
     output.write("#!amber\n")
     output.write("\n")
-    output.write("SET ENGINE_DATA fence_timeout_ms " + timeout + "\n")
+    output.write("SET ENGINE_DATA fence_timeout_ms " + str(timeout) + "\n")
     output.write("\n")
     output.write("SHADER compute test GLSL\n")
     output.write("#version 430\n")
     output.write("\n")
     output.write("layout(set = 0, binding = 0) volatile buffer TEST {\n")
     output.write("\tuint x;\n")
+    output.write("\tuint counter;\n")
     output.write("} test; \n")
     output.write("\n")
-    output.write("layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;\n")
+    output.write("layout(local_size_x = " + str(threads_per_workgrup) + ", local_size_y = 1, local_size_z = 1) in;\n")
     output.write("\n")
     output.write("void main()\n")
     output.write("{\n")
@@ -146,11 +151,14 @@ def handle_atomic_store(output, write_value):
 
 
 # write the necessary "boiler plate" code to end the amber test, along with generating a desired number of threads
-def write_amber_epilogue(output):
+def write_amber_epilogue(output, workgroups, threads_per_workgroup):
+    thread_test = int(workgroups) * int(threads_per_workgroup)
+
+    output.write("\tatomicAdd(test.counter, 1);\n")
     output.write("}\n")
     output.write("END\n")
     output.write("\n")
-    output.write("BUFFER tester DATA_TYPE uint32 SIZE 1 FILL 0\n")
+    output.write("BUFFER tester DATA_TYPE uint32 SIZE 2 FILL 0\n")
     output.write("\n")
     output.write("PIPELINE compute test_pipe\n")
     output.write("  ATTACH test\n")
@@ -158,16 +166,19 @@ def write_amber_epilogue(output):
     output.write("\n")
     output.write("END\n")
     output.write("\n")
-    output.write("RUN test_pipe 65535 1 1\n")
+    output.write("RUN test_pipe " + str(workgroups) + " 1 1\n")
+    output.write("EXPECT tester IDX 4 EQ " + str(thread_test) + "\n")
 
 
-def main():
-    if len(sys.argv) != 3:
-        print("Please input the correct number of arguments", file=sys.stderr)
+# generate an amber test with a provided input file, a desired output file name, and a Configuration object to set up
+# the number of workgroups, threads per workgroup, and timeout
+def generate_amber_test(inputted_file, output_file_name, config=default_config):
+    input_file = inputted_file
+    timeout = config.get_timeout()
+
+    if output_file_name.endswith(".amber"):
+        print("Script will include the .amber extension, please provide a different output file name", file=sys.stderr)
         exit(1)
-
-    input_file = sys.argv[1]
-    timeout = sys.argv[2]
 
     with open(input_file, 'r') as file:
         data = file.read().replace('\n', ' ')
@@ -193,18 +204,32 @@ def main():
     instruction_count = len(instructions)
 
     # name and open the output file to contain the amber test case
-    output_amber_file = sys.argv[1]
-    output_amber_file = output_amber_file.replace(".", "_")
+    output_amber_file = output_file_name
     output_amber_file = output_amber_file + ".amber"
     output = open(output_amber_file, "a")
 
+    threads_per_workgroup = config.get_threads_per_workgroup()
+    workgroups = config.get_number_of_workgroups()
+
     # call the appropriate functions to generate the amber test
-    write_amber_prologue(output, timeout)
+    write_amber_prologue(output, timeout, threads_per_workgroup)
 
     for number, each_thread in enumerate(instructions):
         write_amber_thread_program(output, each_thread, number, instruction_count)
 
-    write_amber_epilogue(output)
+    write_amber_epilogue(output, workgroups, threads_per_workgroup)
+
+
+def main():
+    if len(sys.argv) != 3:
+        print("Please provide a .txt file to parse and the desired name for the outputted Amber file", file=sys.stderr)
+        exit(1)
+
+    input_file = sys.argv[1]
+    output_file = sys.argv[2]
+
+    # generate an amber test for the desired inputs, with a default configuration if none was provided
+    generate_amber_test(input_file, output_file, default_config)
 
 
 if __name__ == "__main__":
