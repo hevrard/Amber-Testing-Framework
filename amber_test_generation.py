@@ -7,7 +7,7 @@ import re
 from configuration import Configuration
 
 # default Configuration object to be used in the Amber test generation
-default_config = Configuration(timeout=20000, workgroups=65535, threads_per_workgroup=1, saturation_level=0)
+default_config = Configuration(timeout=20000, workgroups=65532, threads_per_workgroup=1, saturation_level=0)
 
 
 # write the necessary "boiler plate" code to generate an Amber test, along with Shader
@@ -35,7 +35,7 @@ def write_amber_prologue(output, timeout, threads_per_workgroup, workgroups, num
 
     # if GPU will be saturated, then ensure there is an SSBO with many locations to be accessed and updated
     if saturation_level == 1 or saturation_level == 2:
-        output.write("layout(set = 0, binding = 0) volatile buffer OUT_BUF {\n")
+        output.write("layout(set = 0, binding = 1) volatile buffer OUT_BUF {\n")
         output.write("\tuint x[];\n")
         output.write("} out_buf; \n")
         output.write("\n")
@@ -75,7 +75,7 @@ def write_amber_thread_program(output, thread_instructions, thread_number, numbe
     if saturation_level == 0:
         output.write("\tif (gid_x == " + str(thread_number) + ") { \n")
     elif saturation_level == 1:
-        output.write("\tif (gid_x % total_num_threads == " + str(thread_number) + ") { \n")
+        output.write("\tif (gid_x % num_testing_threads == " + str(thread_number) + ") { \n")
     elif saturation_level == 2:
         output.write("\tif (gid_x / chunk_size == " + str(thread_number) + ") { \n")
     else:
@@ -289,14 +289,20 @@ def generate_amber_test(inputted_file, output_file_name, config=default_config):
 
     # number of threads that are provided in the input txt file
     num_of_testing_threads = len(instructions)
+    threads_per_workgroup = int(config.get_threads_per_workgroup())
+    workgroups = int(config.get_number_of_workgroups())
+
+    total_number_threads = threads_per_workgroup * workgroups
+
+    if (saturation_level == 1 or saturation_level == 2) and (total_number_threads % num_of_testing_threads != 0):
+        print("For saturation, total number of threads must be evenly divisble by number of testing threads",
+              file=sys.stderr)
+        exit(1)
 
     # name and open the output file to contain the amber test case
     output_amber_file = output_file_name
     output_amber_file = output_amber_file + ".amber"
     output = open(output_amber_file, "a")
-
-    threads_per_workgroup = int(config.get_threads_per_workgroup())
-    workgroups = int(config.get_number_of_workgroups())
 
     # call the appropriate functions to generate the amber test
     write_amber_prologue(output, timeout, threads_per_workgroup, workgroups, num_of_testing_threads, saturation_level)
