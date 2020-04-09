@@ -1,5 +1,5 @@
 # Amber-Testing-Framework
-This repository contains scripts to automatically generate amber tests for formatted input files along with examples of test cases
+This repository contains scripts to automatically generate Amber tests for formatted input files along with examples of test cases and sample outputs
 
 # # Repository Organization:
 
@@ -32,7 +32,8 @@ amber_test_driver.py script: python3 amber_test_driver.py directory_of_input_fil
 
 - Note 1: Some of the paths and flags need to be edited in main() based off of where the script is being run relative to amber build 
 
-configuration.py: Configuration object that is used in the scripts above
+configuration.py: Object file that cannot be run independently 
+- Note 1: This Configuration object is used in amber_test_generation.py and amber_test_driver.py
 
 
  
