@@ -5,19 +5,19 @@ This repository contains scripts to automatically generate Amber tests for forma
 
 Amber_2_Thread_2_Instruction_2_instruction_Tests: 
 
-Contains subdirectories of 2 thread, 2 instruction tests labeled according to the test number. Each subdirectory contains the .txt file and associated amber tests
+- Contains subdirectories of 2 thread, 2 instruction tests labeled according to the test number. Each subdirectory contains the .txt file and associated amber tests
 
 Amber_2_Thread_2_Instruction_3_instruction_Tests:
 
-Contains subdirectories of 2 thread, 3 instruction tests labeled according to the test number. Each subdirectory contains the .txt file and associated amber tests
+- Contains subdirectories of 2 thread, 3 instruction tests labeled according to the test number. Each subdirectory contains the .txt file and associated amber tests
 
 Amber_Driver_Results:
 
-Contains subdirectories of the results from the amber_test_driver.py script. Each subdirectory contains the .txt and .csv output tables
+- Contains subdirectories of the results from the amber_test_driver.py script. Each subdirectory contains the .txt and .csv output tables
 
 Input_Files: 
 
-Contains subdirectories of the input .txt files necessary to run the scripts with
+- Contains subdirectories of the input .txt files necessary to run the scripts with
 
 
 
