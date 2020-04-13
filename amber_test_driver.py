@@ -5,7 +5,7 @@
 import os
 import sys
 import csv
-import socket # to get hostname
+import socket  # to get hostname
 from configuration import Configuration
 import amber_test_generation
 from tabulate import tabulate
@@ -13,11 +13,12 @@ from datetime import date
 from datetime import datetime
 import time
 
-AMBER_PATHS=["amber",
-                   "/localdisk/tsoren99/amber/amber/out/Debug/amber",
-                   "/home/tyler/Documents/amber/amber/out/Debug/amber"]
+AMBER_PATHS = ["amber",
+               "/localdisk/tsoren99/amber/amber/out/Debug/amber",
+               "/home/tyler/Documents/amber/amber/out/Debug/amber"]
 
 LOG_FILE = None
+
 
 def log_print(s):
     global LOG_FILE
@@ -100,17 +101,47 @@ def amber_driver(all_config_variants, input_dir, output_dir, amber_build_path, a
             exit(1)
 
     final_results = []
+    # create a row to contain the running sum of all of the columns of the output table
+    running_failure_sum = [0] * (len(all_config_variants) + 1)
+    running_failure_sum[0] = "TOTAL FAILURES"
+
+    for index, each_list in enumerate(results):
+        counter = 0
+        for result in each_list:
+            current_status = result[1]
+            if current_status == "F":
+                counter = counter + 1
+        running_failure_sum[index + 1] = counter
+
+    # counter variable to hold the number of failures in the last column
+    any_passed_sum = 0
 
     # group the test results for each input file together based off of the test numbers
     for i in range(default_config_length):
         current_list = [i]
 
         for each_config_result in results:
-            for each_test in each_config_result:
+            for index, each_test in enumerate(each_config_result):
                 if int(each_test[0]) == i:
                     current_list.append(each_test[1])
                     break
+
+        # if any of the test results pass, then indicate a "P" for the final column, otherwise if all fail, indicate "F"
+        if "F" in current_list:
+            current_list.append("F")
+        else:
+            current_list.append("P")
+
         final_results.append(current_list)
+
+        # if the last item contains an F, increment the counter for the number of final column failures
+        if current_list[-1] == "F":
+            any_passed_sum = any_passed_sum + 1
+
+    # append the total for the final column to final row
+    running_failure_sum.append(any_passed_sum)
+    # append the failure sum statistics row to the final results
+    final_results.append(running_failure_sum)
 
     log_print("")
     log_print("Finished running tests!")
@@ -123,8 +154,8 @@ def amber_driver(all_config_variants, input_dir, output_dir, amber_build_path, a
 def format_output_results(final_results, all_config_variants, output_dir):
     today = date.today()
     todaydate = today.strftime("%Y-%m-%d")
-    output_name_txt = output_dir +"/" + "final_results-" + todaydate + ".txt"
-    output_name_csv = output_dir +"/" + "final_results-" + todaydate + ".csv"
+    output_name_txt = output_dir + "/" + "final_results-" + todaydate + ".txt"
+    output_name_csv = output_dir + "/" + "final_results-" + todaydate + ".csv"
 
     # create a list of headers for the output files based off of the configuration types used
     headers = ["Test File Name"]
@@ -139,6 +170,8 @@ def format_output_results(final_results, all_config_variants, output_dir):
         else:
             headers.append(str(current_saturation))
 
+    headers.append("All Passed")
+
     # open and write results to the .txt file
     output_file_txt = open(output_name_txt, "w+")
     log_print("writing ascii table to:")
@@ -147,12 +180,12 @@ def format_output_results(final_results, all_config_variants, output_dir):
     output_file_txt.write(tabulate(final_results, headers=headers, tablefmt="fancy_grid"))
     output_file_txt.write("\n")
     output_file_txt.close()
-    
+
     log_print("writing csv table to:")
     log_print(output_name_csv)
     log_print("")
 
-    # open and write resilts to the .csv file
+    # open and write results to the .csv file
     with open(output_name_csv, "w") as csv_file:
         writer = csv.writer(csv_file, delimiter=',')
 
@@ -161,6 +194,7 @@ def format_output_results(final_results, all_config_variants, output_dir):
         for line in final_results:
             writer.writerow(line)
     csv_file.close()
+
 
 def find_amber():
     for a in AMBER_PATHS:
@@ -172,20 +206,21 @@ def find_amber():
             log_print("")
             return a
     log_print("unable to find an amber executable")
-    assert(0)
+    assert (0)
+
 
 def get_new_dir_name():
     base_name = "results/output"
-    label=0
-    while(1):
+    label = 0
+    while (1):
         check_name = base_name + str(label)
         if not os.path.exists(check_name):
             print("writing results to:")
             print(check_name)
             print("")
             return check_name
-        label+=1
-    
+        label += 1
+
 
 def main():
     global LOG_FILE
@@ -198,7 +233,7 @@ def main():
     input_dir = sys.argv[1]
     # the user must input the location of the directory where the .amber files will reside
     output_dir_path = get_new_dir_name()
-    # the user must input the location of where the amber build path is located
+
     # the user may change the flags used to build the amber tests with
     amber_build_flags = " -d "
 
@@ -218,8 +253,7 @@ def main():
     log_print("")
     os.system("vulkaninfo > " + vulkan_info)
 
-    amber_build_path = find_amber() + " "    
-
+    amber_build_path = find_amber() + " "
 
     # the user must provide all the possible configuration objecs they want to test with and place them in the
     # all_config_variants list below
