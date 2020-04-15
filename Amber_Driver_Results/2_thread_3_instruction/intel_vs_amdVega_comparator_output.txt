@@ -1,28 +1,26 @@
 -------------------------------------------
 Tests that differ between Amber_Driver_Results/2_thread_3_instruction/vega_final_results-2020-04-09.csv and Amber_Driver_Results/2_thread_3_instruction/intel_final_results-2020-04-09.csv
 -------------------------------------------
-   -- Test Case: 0 (Round Robin Saturation Result)
    -- Test Case: 20 (Round Robin Saturation Result)
-   -- Test Case: 27 (Round Robin Saturation Result)
-   -- Test Case: 32 (Round Robin Saturation Result)
    -- Test Case: 40 (Round Robin Saturation Result)
+   -- Test Case: 53 (Round Robin Saturation Result)
+   -- Test Case: 75 (Round Robin Saturation Result)
    -- Test Case: 78 (Round Robin Saturation Result)
    -- Test Case: 84 (Round Robin Saturation Result)
    -- Test Case: 86 (Round Robin Saturation Result)
-   -- Test Case: 93 (Round Robin Saturation Result)
    -- Test Case: 96 (Round Robin Saturation Result)
    -- Test Case: 100 (Round Robin Saturation Result)
+   -- Test Case: 104 (Round Robin Saturation Result)
    -- Test Case: 110 (Round Robin Saturation Result)
+   -- Test Case: 118 (Round Robin Saturation Result)
    -- Test Case: 135 (Round Robin Saturation Result)
    -- Test Case: 147 (Round Robin Saturation Result)
    -- Test Case: 150 (Round Robin Saturation Result)
-   -- Test Case: 152 (Round Robin Saturation Result)
    -- Test Case: 153 (Round Robin Saturation Result)
    -- Test Case: 155 (Round Robin Saturation Result)
    -- Test Case: 162 (Round Robin Saturation Result)
    -- Test Case: 165 (Round Robin Saturation Result)
    -- Test Case: 172 (Round Robin Saturation Result)
-   -- Test Case: 174 (Round Robin Saturation Result)
 
 -------------------------------------------
 Tests that Amber_Driver_Results/2_thread_3_instruction/vega_final_results-2020-04-09.csv passes and Amber_Driver_Results/2_thread_3_instruction/intel_final_results-2020-04-09.csv fails
@@ -31,28 +29,26 @@ Tests that Amber_Driver_Results/2_thread_3_instruction/vega_final_results-2020-0
 -------------------------------------------
 Tests that Amber_Driver_Results/2_thread_3_instruction/vega_final_results-2020-04-09.csv fails and Amber_Driver_Results/2_thread_3_instruction/intel_final_results-2020-04-09.csv passes
 -------------------------------------------
-   -- Test Case: 0 (Round Robin Saturation Result)
    -- Test Case: 20 (Round Robin Saturation Result)
-   -- Test Case: 27 (Round Robin Saturation Result)
-   -- Test Case: 32 (Round Robin Saturation Result)
    -- Test Case: 40 (Round Robin Saturation Result)
+   -- Test Case: 53 (Round Robin Saturation Result)
+   -- Test Case: 75 (Round Robin Saturation Result)
    -- Test Case: 78 (Round Robin Saturation Result)
    -- Test Case: 84 (Round Robin Saturation Result)
    -- Test Case: 86 (Round Robin Saturation Result)
-   -- Test Case: 93 (Round Robin Saturation Result)
    -- Test Case: 96 (Round Robin Saturation Result)
    -- Test Case: 100 (Round Robin Saturation Result)
+   -- Test Case: 104 (Round Robin Saturation Result)
    -- Test Case: 110 (Round Robin Saturation Result)
+   -- Test Case: 118 (Round Robin Saturation Result)
    -- Test Case: 135 (Round Robin Saturation Result)
    -- Test Case: 147 (Round Robin Saturation Result)
    -- Test Case: 150 (Round Robin Saturation Result)
-   -- Test Case: 152 (Round Robin Saturation Result)
    -- Test Case: 153 (Round Robin Saturation Result)
    -- Test Case: 155 (Round Robin Saturation Result)
    -- Test Case: 162 (Round Robin Saturation Result)
    -- Test Case: 165 (Round Robin Saturation Result)
    -- Test Case: 172 (Round Robin Saturation Result)
-   -- Test Case: 174 (Round Robin Saturation Result)
 
 -------------------------------------------
 Tests that both Amber_Driver_Results/2_thread_3_instruction/vega_final_results-2020-04-09.csv and Amber_Driver_Results/2_thread_3_instruction/intel_final_results-2020-04-09.csv fail
@@ -97,5 +93,4 @@ Tests that both Amber_Driver_Results/2_thread_3_instruction/vega_final_results-2
    -- Test Case: 138 (Chunking Saturation Result)
    -- Test Case: 143 (Chunking Saturation Result)
    -- Test Case: 164 (Chunking Saturation Result)
-
 
