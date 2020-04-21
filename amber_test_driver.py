@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------
 # amber_test_driver.py
-# Author: Hari Raval
+# Authors: Hari Raval and Tyler Sorensen
 # -----------------------------------------------------------------------
 import os
 import sys
@@ -20,6 +20,7 @@ AMBER_PATHS = ["amber",
 LOG_FILE = None
 
 
+# define a log print function
 def log_print(s):
     global LOG_FILE
     LOG_FILE.write(s + "\n")
@@ -27,8 +28,10 @@ def log_print(s):
 
 
 # create amber tests with provided input directory and specified configuration object and path/build details details
-def run_amber_test(input_dir, output_dir, each_cfg_option, amber_build_path, amber_build_flags):
-    current_test_results = []
+def run_amber_test(input_dir, output_dir, each_cfg_option, amber_build_path, amber_build_flags, num_iter):
+    simple_test_results = []
+    verbose_test_results = []
+    all_test_results = []
 
     # prepare to name each file according to the level of saturation being done
     saturation_level = each_cfg_option.get_saturation_level()
@@ -41,122 +44,175 @@ def run_amber_test(input_dir, output_dir, each_cfg_option, amber_build_path, amb
     else:
         output_file_name_extension = "_" + str(saturation_level) + "level_saturation"
 
-    # iterate over all files in the input directory and create a .amber file for each .txt file
+    # iterate over all files in the input directory, create a .amber file for each .txt file, and run the amber file
     for file_name in os.listdir(input_dir):
         if file_name.endswith('.txt'):
             # input file name shouldn't end with .amber as the amber_test_generation.py script will add the extension
             output_file_name = file_name[:-4] + "_txt_" + output_file_name_extension
-            input_file_name = input_dir + "/" + file_name
-            log_print("generating amber test for: " + input_file_name)
-            log_print("in")
-            log_print(output_file_name)
+            input_file_name = input_dir + file_name
+            log_print("generating amber test for: " + file_name + " in " + output_dir)
+            # create the amber file associated with input_file_name
             amber_test_generation.generate_amber_test(input_file_name, output_file_name, each_cfg_option)
 
             output_file_name = output_file_name + ".amber"
 
-            # generate the command to run the amber test and place the results in a file temporarily
-            run__test = amber_build_path + output_file_name + amber_build_flags + "> temp_results.txt"
-            log_print("running test: " + output_file_name)
-            log_print(run__test)
-            os.system(run__test)
+            # generate command to run the amber test for a specified iteration count and append results to a temp file
+            for i in range(int(num_iter)):
+                run__test = amber_build_path + output_file_name + amber_build_flags + ">> temp_results.txt"
+                log_print("running test: " + output_file_name)
+                log_print(run__test)
+                os.system(run__test)
 
             # analyze the results of the temporary file to determine whether the test passed (P) or failed (F)
             with open('temp_results.txt', 'r') as file:
-                results = file.read()
+                results = file.read().split("\n")
                 test_iteration = file_name[:-4]
-                if "1 pass" in results:
+                failure_count = 0
+                pass_count = 0
+
+                # count the number of failures, if any, and update both simple and verbose results accordingly
+                for current_line in results:
+                    if "1 fail" in current_line:
+                        failure_count = failure_count + 1
+                    elif "1 pass" in current_line:
+                        pass_count = pass_count + 1
+
+                # if there were no failures, indicate a "P" in both sets of tables
+                if failure_count == 0:
                     log_print("P")
                     temp_item = [test_iteration, "P"]
-                    current_test_results.append(temp_item)
-                elif "1 fail" in results:
-                    log_print("F")
-                    temp_item = [test_iteration, "F"]
-                    current_test_results.append(temp_item)
+                    simple_test_results.append(temp_item)
+                    verbose_test_results.append(temp_item)
 
+                # if there is at least one failure, update simple table with "F" and verbose table with fraction of "F"
+                else:
+                    log_print("F")
+                    fract = "F (" + str(failure_count) + "/" + str(num_iter) + ")"
+                    temp_item_verbose = [test_iteration, fract]
+                    temp_item_simple = [test_iteration, "F"]
+                    simple_test_results.append(temp_item_simple)
+                    verbose_test_results.append(temp_item_verbose)
+
+            os.system("rm -f temp_results.txt")
             # create a directory of the amber test scripts generated at the specified output directory
             log_print("")
             move_amber_test_file = "mv " + output_file_name + " " + output_dir
             os.system(move_amber_test_file)
 
     os.system("rm -f temp_results.txt")
+    all_test_results.append(simple_test_results)
+    all_test_results.append(verbose_test_results)
 
-    return current_test_results
+    return all_test_results
 
 
 # main driver function to create amber files with the specified list of configuration objects, provided
 # input directory, and details of the build path/type
-def amber_driver(all_config_variants, input_dir, output_dir, amber_build_path, amber_build_flags):
-    results = []
-    # iterate over each configuration type and run directory of txt files with each configuration using run_amber_test()
-    for each_cfg_option in all_config_variants:
-        temp_results = run_amber_test(input_dir, output_dir, each_cfg_option, amber_build_path, amber_build_flags)
-        results.append(temp_results)
+def amber_driver(all_config_variants, input_dir, output_dir, amber_build_path, amber_build_flags, num_iter):
+    simple_results = []
+    verbose_results = []
 
-    # verify that the results based off of each of the configuration settings are the same size to ensure all tests ran
-    default_config_length = len(results[0])
-    for result in results:
-        current_length = len(result)
-        if current_length != default_config_length:
-            print("The number of results from all of the configuration settings must be the same", file=sys.stderr)
+    # iterate over each configuration type and run directory of .txt files on each configuration using run_amber_test()
+    for each_cfg_opt in all_config_variants:
+        temp_results = run_amber_test(input_dir, output_dir, each_cfg_opt, amber_build_path, amber_build_flags,
+                                      num_iter)
+        if len(temp_results) != 2:
+            print("An error occured during the generation of the amber tests in run_amber_test()", file=sys.stderr)
+            exit(1)
+        simple_results.append(temp_results[0])
+        verbose_results.append(temp_results[1])
+
+    # verify that the results based on each configuration are the same size to ensure all tests ran
+    default_config_length = len(simple_results[0])
+    for (result1, result2) in zip(simple_results, verbose_results):
+        cur_simple_length = len(result1)
+        cur_verbose_length = len(result2)
+        if cur_simple_length != default_config_length or cur_verbose_length != default_config_length:
+            print("The number of results from each of the configuration settings must be the same", file=sys.stderr)
             exit(1)
 
-    final_results = []
-    # create a row to contain the running sum of all of the columns of the output table
-    running_failure_sum = [0] * (len(all_config_variants) + 1)
-    running_failure_sum[0] = "TOTAL FAILURES"
+    final_simple_results = []
+    final_verbose_results = []
 
-    for index, each_list in enumerate(results):
-        counter = 0
-        for result in each_list:
-            current_status = result[1]
+    # create a row to contain the running sum of all of the columns for both types of output tables
+    running_failure_sum_simple = [0] * (len(all_config_variants) + 1)
+    running_failure_sum_simple[0] = "Total failures:"
+    running_failure_sum_verbose = [0] * (len(all_config_variants) + 1)
+    running_failure_sum_verbose[0] = "Total failures:"
+
+    # iterate over both the simple results and the verbose results to process the number of failures per column
+    for index, (simple_list, verbose_list) in enumerate(zip(simple_results, verbose_results)):
+        counter_simple = 0
+        counter_verbose = 0
+        for simple_result in simple_list:
+            current_status = simple_result[1]
             if current_status == "F":
-                counter = counter + 1
-        running_failure_sum[index + 1] = counter
+                counter_simple = counter_simple + 1
+        for verbose_result in verbose_list:
+            current_status = verbose_result[1]
+            if "F" in current_status:
+                counter_verbose = counter_verbose + 1
 
-    # counter variable to hold the number of failures in the last column
-    any_passed_sum = 0
+        running_failure_sum_simple[index + 1] = counter_simple
+        running_failure_sum_verbose[index + 1] = counter_verbose
+
+    # counter variable to hold the number of failures in the last column ("any passed" column)
+    any_passed_sum_simple = 0
+    any_passed_sum_verbose = 0
 
     # group the test results for each input file together based off of the test numbers
     for i in range(default_config_length):
-        current_list = [i]
+        current_simple_list = [i]
+        current_verbose_list = [i]
+        for (each_simple_config_result, each_verbose_config_result) in zip(simple_results, verbose_results):
+            for (cur_s_test, cur_v_test) in zip(each_simple_config_result, each_verbose_config_result):
+                if int(cur_s_test[0]) == i:
+                    current_simple_list.append(cur_s_test[1])
+                if int(cur_v_test[0]) == i:
+                    current_verbose_list.append(cur_v_test[1])
 
-        for each_config_result in results:
-            for index, each_test in enumerate(each_config_result):
-                if int(each_test[0]) == i:
-                    current_list.append(each_test[1])
-                    break
-
-        # if any of the test results pass, then indicate a "P" for the final column, otherwise if all fail, indicate "F"
-        if "F" in current_list:
-            current_list.append("F")
+        # if any of the test results fail, then indicate a "F" for the final column, otherwise if all pass, indicate "P"
+        if "F" in current_simple_list:
+            current_simple_list.append("F")
         else:
-            current_list.append("P")
+            current_simple_list.append("P")
 
-        final_results.append(current_list)
+        for index, result in enumerate(current_verbose_list[1:]):
+            if "F" in result:
+                current_verbose_list.append("F")
+                break
+            if index == len(current_verbose_list[1:]) - 1:
+                current_verbose_list.append("P")
 
-        # if the last item contains an F, increment the counter for the number of final column failures
-        if current_list[-1] == "F":
-            any_passed_sum = any_passed_sum + 1
+        final_simple_results.append(current_simple_list)
+        final_verbose_results.append(current_verbose_list)
 
-    # append the total for the final column to final row
-    running_failure_sum.append(any_passed_sum)
-    # append the failure sum statistics row to the final results
-    final_results.append(running_failure_sum)
+        # if the last item contains an F, increment the counter for the number of failures in the final column
+        if current_simple_list[-1] == "F":
+            any_passed_sum_simple = any_passed_sum_simple + 1
+
+        if "F" in str(current_verbose_list[-1]):
+            any_passed_sum_verbose = any_passed_sum_verbose + 1
+
+    # for both tables, append the total for the final column to the final row
+    running_failure_sum_simple.append(any_passed_sum_simple)
+    running_failure_sum_verbose.append(any_passed_sum_verbose)
+    # for both tables, append the failure sum statistics row to the final results
+    final_simple_results.append(running_failure_sum_simple)
+    final_verbose_results.append(running_failure_sum_verbose)
 
     log_print("")
     log_print("Finished running tests!")
     log_print("")
 
-    format_output_results(final_results, all_config_variants, output_dir)
+    # call the formatter function to generate tables of data
+    format_output_results(final_simple_results, final_verbose_results, all_config_variants, output_dir)
 
 
-# output the final results into a formatted table presented in a .txt file and a .csv file
-def format_output_results(final_results, all_config_variants, output_dir):
+# prepare the headers and file name information for each type of file outputted
+def format_output_results(final_simple_results, final_verbose_results, all_config_variants, output_dir):
     today = date.today()
-    todaydate = today.strftime("%Y-%m-%d")
-    output_name_txt = output_dir + "/" + "final_results-" + todaydate + ".txt"
-    output_name_csv = output_dir + "/" + "final_results-" + todaydate + ".csv"
-
+    td = today.strftime("%Y-%m-%d")
     # create a list of headers for the output files based off of the configuration types used
     headers = ["Test File Name"]
     for each_config in all_config_variants:
@@ -172,30 +228,124 @@ def format_output_results(final_results, all_config_variants, output_dir):
 
     headers.append("All Passed")
 
-    # open and write results to the .txt file
-    output_file_txt = open(output_name_txt, "w+")
-    log_print("writing ascii table to:")
-    log_print(output_name_txt)
+    format_ascii_table_output(final_simple_results, final_verbose_results, output_dir, headers, td)
+    format_csv_table_output(final_simple_results, final_verbose_results, output_dir, headers, td)
+    format_html_table_output(final_simple_results, output_dir, headers, td)
+
+
+# output both the iterative and non-iterative results into ascii tables
+def format_ascii_table_output(final_simple_results, final_verbose_results, output_dir, headers, td):
+    output_name_simple_txt = output_dir + "/" + "simple_final_results-" + td + ".txt"
+    output_name_verbose_txt = output_dir + "/" + "iteration_based_final_results-" + td + ".txt"
+
+    # open and write results to the simple .txt file
+    output_file_txt = open(output_name_simple_txt, "w+")
+    log_print("writing simple ascii table to:")
+    log_print(output_name_simple_txt)
     log_print("")
-    output_file_txt.write(tabulate(final_results, headers=headers, tablefmt="fancy_grid"))
+    output_file_txt.write(tabulate(final_simple_results, headers=headers, tablefmt="fancy_grid"))
     output_file_txt.write("\n")
     output_file_txt.close()
 
-    log_print("writing csv table to:")
-    log_print(output_name_csv)
+    # open and write results to the verbose .txt file
+    output_file_txt = open(output_name_verbose_txt, "w+")
+    log_print("writing iteration-based ascii table to:")
+    log_print(output_name_verbose_txt)
+    log_print("")
+    output_file_txt.write(tabulate(final_verbose_results, headers=headers, tablefmt="fancy_grid"))
+    output_file_txt.write("\n")
+    output_file_txt.close()
+
+
+# output both the iterative and non-iterative results into csv tables
+def format_csv_table_output(final_simple_results, final_verbose_results, output_dir, headers, td):
+    output_name_simple_csv = output_dir + "/" + "simple_final_results-" + td + ".csv"
+    output_name_verbose_csv = output_dir + "/" + "iteration_based_final_results-" + td + ".csv"
+
+    log_print("writing simple csv table to:")
+    log_print(output_name_simple_csv)
     log_print("")
 
-    # open and write results to the .csv file
-    with open(output_name_csv, "w") as csv_file:
+    # open and write simple results to a .csv file
+    with open(output_name_simple_csv, "w") as csv_file:
         writer = csv.writer(csv_file, delimiter=',')
 
         writer.writerow(headers)
 
-        for line in final_results:
+        for line in final_simple_results:
+            writer.writerow(line)
+    csv_file.close()
+
+    log_print("writing simple csv table to:")
+    log_print(output_name_simple_csv)
+    log_print("")
+
+    # open and write verbose results to a .csv file
+    with open(output_name_verbose_csv, "w") as csv_file:
+        writer = csv.writer(csv_file, delimiter=',')
+        writer.writerow(headers)
+        for line in final_verbose_results:
             writer.writerow(line)
     csv_file.close()
 
 
+# output the non-iterative results into a formatted html table
+def format_html_table_output(final_simple_results, output_dir, headers, td):
+    output_name_html = output_dir + "/" + "html-colored-table" + td + ".html"
+
+    # open and write results to the html .txt file
+    output_file_txt = open(output_name_html, "w+")
+    log_print("writing colored html table to:")
+    log_print(output_name_html)
+    log_print("")
+    html = tabulate(final_simple_results, headers, tablefmt="html").split("\n")
+
+    # extract the rows that contain pass/fail data
+    data_rows = []
+    for each_line in html:
+        if "<tr><td>" in each_line:
+            data_rows.append(each_line)
+
+    colored_data_rows = []
+
+    # color each cell of data according to the result status (pass = green, fail = red)
+    for curr_line in data_rows:
+        curr_line_list = curr_line.split(" ")
+        while "" in curr_line_list:
+            curr_line_list.remove("")
+        for index, item in enumerate(curr_line_list):
+            if "P" in item:
+                curr_line_list[index] = '<td bgcolor="#009900">P'
+            if "F" in item:
+                curr_line_list[index] = '<td bgcolor="#CC0000">F'
+
+        colored_data_rows.append(curr_line_list)
+
+    # merge the data back into proper html string format
+    merged_data = [' '.join(row) for row in colored_data_rows]
+    updated_data_as_str = "\n".join(merged_data)
+
+    # create the string of html code to be written to the output file
+    begin_html = html[:5]
+    beg_str = "\n".join(begin_html)
+    end_html = html[-2:]
+    end_str = "\n".join(end_html)
+    html_table = beg_str + updated_data_as_str + end_str
+
+    # boiler plate code for html_table (Cite: https://www.w3schools.com/tags/tryit.asp?filename=tryhtml_td_bgcolor)
+
+    start_boiler_plate = "<!DOCTYPE html> \n<html> \n<head> \n<style> \ntable, th, td {" \
+                         "\n  border: 1px solid black; \n} \n</style> \n</head> \n<body> \n" \
+                         "<h1>Colored Amber Test Results</h1>\n"
+
+    end_boiler_plate = "\n</body> \n</html> \n"
+
+    output_file_txt.write(start_boiler_plate + html_table + end_boiler_plate)
+    output_file_txt.write("\n")
+    output_file_txt.close()
+
+
+# automatically find the amber build path
 def find_amber():
     for a in AMBER_PATHS:
         cmd = "which " + a + " > /dev/null"
@@ -209,10 +359,11 @@ def find_amber():
     assert (0)
 
 
+# create a directory to hold the output
 def get_new_dir_name():
     base_name = "results/output"
     label = 0
-    while (1):
+    while 1:
         check_name = base_name + str(label)
         if not os.path.exists(check_name):
             print("writing results to:")
@@ -224,17 +375,20 @@ def get_new_dir_name():
 
 def main():
     global LOG_FILE
-    if len(sys.argv) != 2:
-        print("Please provide a directory of .txt files to parse and process into Amber tests", file=sys.stderr)
+    if len(sys.argv) != 3:
+        print("Please provide a directory of .txt files to process into Amber tests and the number of iterations"
+              " to run each file for", file=sys.stderr)
         exit(1)
 
     start = time.time()
 
     input_dir = sys.argv[1]
+    num_iterations = sys.argv[2]
+
     # the user must input the location of the directory where the .amber files will reside
     output_dir_path = get_new_dir_name()
 
-    # the user may change the flags used to build the amber tests with
+    # the user may change the flags used to build the amber tests with (include spaces before and after the flag(s))
     amber_build_flags = " -d "
 
     os.system("mkdir " + output_dir_path)
@@ -264,7 +418,7 @@ def main():
     all_config_variants = [default_config, round_robin_cfg, chunking_cfg]
 
     # call the main driver function
-    amber_driver(all_config_variants, input_dir, output_dir_path, amber_build_path, amber_build_flags)
+    amber_driver(all_config_variants, input_dir, output_dir_path, amber_build_path, amber_build_flags, num_iterations)
     end = time.time()
     log_print("")
     log_print("Execution time (s):")
