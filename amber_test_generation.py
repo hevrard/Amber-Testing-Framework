@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------
-# amber_two_generation.py
+# amber_test_generation.py
 # Author: Hari Raval
 # -----------------------------------------------------------------------
 import sys
@@ -27,7 +27,7 @@ def write_amber_prologue(output, timeout, threads_per_workgroup, workgroups, num
 
     # if no saturation, then only one location in the SSBO is needed
     if saturation_level == 0:
-        output.write("\tuint x;\n")
+        output.write("\tuint x;\n")  # NEED TO PUT ANOTHER MEMORY LOCATION y HERE AND UPDATE LINE 225
 
     output.write("\tuint counter;\n")
     output.write("} test; \n")
@@ -35,7 +35,7 @@ def write_amber_prologue(output, timeout, threads_per_workgroup, workgroups, num
 
     # if GPU will be saturated, then ensure there is an SSBO with many locations to be accessed and updated
     if saturation_level == 1 or saturation_level == 2:
-        output.write("layout(set = 0, binding = 1) volatile buffer OUT_BUF {\n")
+        output.write("layout(set = 0, binding = 1) volatile buffer OUT_BUF {\n") # NEED TO PUT ANOTHER MEMORY ARRAY LOCATION y HERE AND UPDATE LINE 227 & 231
         output.write("\tuint x[];\n")
         output.write("} out_buf; \n")
         output.write("\n")
