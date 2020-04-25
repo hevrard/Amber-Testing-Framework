@@ -217,12 +217,17 @@ def format_output_results(final_simple_results, final_verbose_results, all_confi
     headers = ["Test File Name"]
     for each_config in all_config_variants:
         current_saturation = each_config.get_saturation_level()
+        subgroup_setting = each_config.get_subgroup_setting()
+        threads_per_wg = each_config.get_threads_per_workgroup()
         if current_saturation == 0:
-            headers.append("No saturation Result")
+            if subgroup_setting == 0:
+                headers.append("No saturation (same subgroup, " + str(threads_per_wg) + " threads per workgroup)")
+            elif subgroup_setting == 1:
+                headers.append("No saturation (diff. subgroup, " + str(threads_per_wg) + " threads per workgroup)")
         elif current_saturation == 1:
-            headers.append("Round Robin Saturation Result")
+            headers.append("Round Robin Saturation")
         elif current_saturation == 2:
-            headers.append("Chunking Saturation Result")
+            headers.append("Chunking Saturation")
         else:
             headers.append(str(current_saturation))
 
@@ -389,7 +394,7 @@ def main():
     output_dir_path = get_new_dir_name()
 
     # the user may change the flags used to build the amber tests with (include spaces before and after the flag(s))
-    amber_build_flags = " -d "
+    amber_build_flags = "-d -t spv1.3 "
 
     os.system("mkdir " + output_dir_path)
 
@@ -409,13 +414,17 @@ def main():
 
     amber_build_path = find_amber() + " "
 
-    # the user must provide all the possible configuration objecs they want to test with and place them in the
+    # the user must provide all the possible configuration objects they want to test with, placing them in the
     # all_config_variants list below
-    default_config = Configuration(timeout=2000, workgroups=65532, threads_per_workgroup=1, saturation_level=0)
-    round_robin_cfg = Configuration(timeout=2000, workgroups=65532, threads_per_workgroup=1, saturation_level=1)
-    chunking_cfg = Configuration(timeout=2000, workgroups=65532, threads_per_workgroup=1, saturation_level=2)
+    default_cfg = Configuration(timeout=2000, workgroups=65532, threads_per_workgroup=1, saturation_level=0, subgroup=0)
+    round_r_cfg = Configuration(timeout=2000, workgroups=65532, threads_per_workgroup=1, saturation_level=1, subgroup=0)
+    chunk_cfg = Configuration(timeout=2000, workgroups=65532, threads_per_workgroup=1, saturation_level=2, subgroup=0)
+    diff_subgroup_cfg = Configuration(timeout=2000, workgroups=65532, threads_per_workgroup=256, saturation_level=0,
+                                      subgroup=1)
+    diff_workgroup_cfg = Configuration(timeout=2000, workgroups=65532, threads_per_workgroup=4, saturation_level=0,
+                                       subgroup=0)
 
-    all_config_variants = [default_config, round_robin_cfg, chunking_cfg]
+    all_config_variants = [default_cfg, diff_subgroup_cfg, diff_workgroup_cfg]
 
     # call the main driver function
     amber_driver(all_config_variants, input_dir, output_dir_path, amber_build_path, amber_build_flags, num_iterations)
