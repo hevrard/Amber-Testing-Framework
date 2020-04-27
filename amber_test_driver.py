@@ -33,10 +33,15 @@ def run_amber_test(input_dir, output_dir, each_cfg_option, amber_build_path, amb
     verbose_test_results = []
     all_test_results = []
 
-    # prepare to name each file according to the level of saturation being done
+    # prepare to name each file according to the level of saturation being done and subgroup status
     saturation_level = each_cfg_option.get_saturation_level()
+    subgroup_setting = each_cfg_option.get_subgroup_setting()
+    threads_per_wg = each_cfg_option.get_threads_per_workgroup()
     if saturation_level == 0:
-        output_file_name_extension = "no_saturation"
+        if subgroup_setting == 0:
+            output_file_name_extension = "no_saturation_same_subgroup_" + str(threads_per_wg) + "_threads_per_wg"
+        elif subgroup_setting == 1:
+            output_file_name_extension = "no_saturation_diff_subgroup_" + str(threads_per_wg) + "_threads_per_wg"
     elif saturation_level == 1:
         output_file_name_extension = "round_robin"
     elif saturation_level == 2:
@@ -394,7 +399,7 @@ def main():
     output_dir_path = get_new_dir_name()
 
     # the user may change the flags used to build the amber tests with (include spaces before and after the flag(s))
-    amber_build_flags = "-d -t spv1.3 "
+    amber_build_flags = " -d -t spv1.3 "
 
     os.system("mkdir " + output_dir_path)
 
