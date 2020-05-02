@@ -1,11 +1,14 @@
+#!/usr/bin/env python3
 # -----------------------------------------------------------------------
 # amber_test_driver.py
 # Authors: Hari Raval and Tyler Sorensen
 # -----------------------------------------------------------------------
+import argparse
 import os
 import sys
 import csv
 import socket  # to get hostname
+import subprocess
 from configuration import Configuration
 import amber_test_generation
 from tabulate import tabulate
@@ -27,8 +30,8 @@ def log_print(s):
     print(s)
 
 
-# create amber tests with provided input directory and specified configuration object and path/build details details
-def run_amber_test(input_dir, output_dir, each_cfg_option, amber_build_path, amber_build_flags, num_iter):
+# create amber tests with provided input directory and specified configuration object and path/build details
+def run_amber_test(input_dir, output_dir, each_cfg_option, amber_build_path, amber_build_flags, num_iter, android):
     simple_test_results = []
     verbose_test_results = []
     all_test_results = []
@@ -54,7 +57,7 @@ def run_amber_test(input_dir, output_dir, each_cfg_option, amber_build_path, amb
         if file_name.endswith('.txt'):
             # input file name shouldn't end with .amber as the amber_test_generation.py script will add the extension
             output_file_name = file_name[:-4] + "_txt_" + output_file_name_extension
-            input_file_name = input_dir + file_name
+            input_file_name = os.path.join(input_dir, file_name)
             log_print("generating amber test for: " + file_name + " in " + output_dir)
             # create the amber file associated with input_file_name
             amber_test_generation.generate_amber_test(input_file_name, output_file_name, each_cfg_option)
@@ -62,9 +65,13 @@ def run_amber_test(input_dir, output_dir, each_cfg_option, amber_build_path, amb
             output_file_name = output_file_name + ".amber"
 
             # generate command to run the amber test for a specified iteration count and append results to a temp file
+            run__test = "timeout -k 1 5 " + amber_build_path + output_file_name + amber_build_flags + ">> temp_results.txt"
+            if android:
+                # push test file on the device
+                os.system("adb push " + output_file_name + " /data/local/tmp/")
+                # prepare the specific run command to run amber on-device
+                run__test = "timeout -k 1 5 adb shell 'cd /data/local/tmp ; ./amber_ndk " + amber_build_flags + " " + os.path.basename(output_file_name) + "' >> temp_results.txt"
             for i in range(int(num_iter)):
-                run__test = "timeout 5 " + amber_build_path + output_file_name + \
-                            amber_build_flags + ">> temp_results.txt"
                 log_print("running test: " + output_file_name)
                 log_print(run__test)
                 os.system(run__test)
@@ -114,14 +121,14 @@ def run_amber_test(input_dir, output_dir, each_cfg_option, amber_build_path, amb
 
 # main driver function to create amber files with the specified list of configuration objects, provided
 # input directory, and details of the build path/type
-def amber_driver(all_config_variants, input_dir, output_dir, amber_build_path, amber_build_flags, num_iter):
+def amber_driver(all_config_variants, input_dir, output_dir, amber_build_path, amber_build_flags, num_iter, android):
     simple_results = []
     verbose_results = []
 
     # iterate over each configuration type and run directory of .txt files on each configuration using run_amber_test()
     for each_cfg_opt in all_config_variants:
         temp_results = run_amber_test(input_dir, output_dir, each_cfg_opt, amber_build_path, amber_build_flags,
-                                      num_iter)
+                                      num_iter, android)
         if len(temp_results) != 2:
             print("An error occured during the generation of the amber tests in run_amber_test()", file=sys.stderr)
             exit(1)
@@ -387,17 +394,37 @@ def get_new_dir_name():
         label += 1
 
 
+def android_sanity_check():
+    """Check that Android device is accessible, and amber is installed as /data/local/tmp/amber_ndk"""
+    try:
+        subprocess.run(["adb", "shell", "true"], timeout=5, check=True)
+    except:
+        print("Error: no Android device connected?")
+        exit(1)
+
+    try:
+        subprocess.run(["adb", "shell", "test -f /data/local/tmp/amber_ndk"], timeout=5, check=True)
+    except:
+        print("Error: on Android device, /data/local/tmp/amber_ndk was not found. Please install Amber at this precise location.")
+        exit(1)
+
+
 def main():
     global LOG_FILE
-    if len(sys.argv) != 3:
-        print("Please provide a directory of .txt files to process into Amber tests and the number of iterations"
-              " to run each file for", file=sys.stderr)
-        exit(1)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('input_dir', help='Path to input directory containing test in text format')
+    parser.add_argument('num_iterations', type=int, help='Number of iteration to run each test')
+    parser.add_argument('--android', action='store_true', help='Run on Android device. Assumes a single Android device is connected, accessible with adb, and with amber already installed as /data/local/tmp/amber_ndk')
+    args = parser.parse_args()
+
+    if args.android:
+        android_sanity_check()
 
     start = time.time()
 
-    input_dir = sys.argv[1]
-    num_iterations = sys.argv[2]
+    input_dir = args.input_dir
+    num_iterations = args.num_iterations
 
     # the user must input the location of the directory where the .amber files will reside
     output_dir_path = get_new_dir_name()
@@ -416,12 +443,20 @@ def main():
     log_print("Computer:")
     log_print(socket.gethostname())
     log_print("")
-    vulkan_info = output_dir_path + "/vulkaninfo.txt"
-    log_print("storing vulkaninfo to: " + vulkan_info)
-    log_print("")
-    os.system("vulkaninfo > " + vulkan_info)
 
-    amber_build_path = find_amber() + " "
+    # Store Vulkan info
+    vulkan_info = output_dir_path + "/vulkaninfo.txt"
+    if args.android:
+        log_print("No vulkaninfo on Android")
+    else:
+        log_print("storing vulkaninfo to: " + vulkan_info)
+        log_print("")
+        os.system("vulkaninfo > " + vulkan_info)
+
+    if args.android:
+        amber_build_path = ""   # ignored anyway
+    else:
+        amber_build_path = find_amber() + " "
 
     # the user must provide all the possible configuration objects they want to test with, placing them in the
     # all_config_variants list below
@@ -436,7 +471,7 @@ def main():
     all_config_variants = [default_cfg, diff_subgroup_cfg, diff_workgroup_cfg]
 
     # call the main driver function
-    amber_driver(all_config_variants, input_dir, output_dir_path, amber_build_path, amber_build_flags, num_iterations)
+    amber_driver(all_config_variants, input_dir, output_dir_path, amber_build_path, amber_build_flags, num_iterations, args.android)
     end = time.time()
     log_print("")
     log_print("Execution time (s):")
