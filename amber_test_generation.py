@@ -95,7 +95,8 @@ def write_amber_thread_program(output, thread_instructions, thread_number, numbe
         if subgroup_set == 0:
             output.write("\tif (gid_x == " + str(thread_number) + ") { \n")
         else:
-            output.write("\tif (gl_SubgroupID == " + str(thread_number) + " && gl_SubgroupInvocationID == 0" + ") { \n")
+            output.write("\tif (gl_SubgroupID == " + str(thread_number) + " && gl_SubgroupInvocationID == 0 &&"
+                                                                          " gl_WorkGroupID.x == 0" + ") { \n")
     elif saturation_level == 1:
         output.write("\tif (gid_x % num_testing_threads == " + str(thread_number) + ") { \n")
     elif saturation_level == 2:

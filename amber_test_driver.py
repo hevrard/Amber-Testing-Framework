@@ -63,7 +63,8 @@ def run_amber_test(input_dir, output_dir, each_cfg_option, amber_build_path, amb
 
             # generate command to run the amber test for a specified iteration count and append results to a temp file
             for i in range(int(num_iter)):
-                run__test = amber_build_path + output_file_name + amber_build_flags + ">> temp_results.txt"
+                run__test = "timeout 5 " + amber_build_path + output_file_name + \
+                            amber_build_flags + ">> temp_results.txt"
                 log_print("running test: " + output_file_name)
                 log_print(run__test)
                 os.system(run__test)
@@ -226,7 +227,10 @@ def format_output_results(final_simple_results, final_verbose_results, all_confi
         threads_per_wg = each_config.get_threads_per_workgroup()
         if current_saturation == 0:
             if subgroup_setting == 0:
-                headers.append("No saturation (same subgroup, " + str(threads_per_wg) + " threads per workgroup)")
+                if threads_per_wg == 1:
+                    headers.append("No saturation (same subgroup")
+                else:
+                    headers.append("No saturation (same subgroup, " + str(threads_per_wg) + " threads per workgroup)")
             elif subgroup_setting == 1:
                 headers.append("No saturation (diff. subgroup, " + str(threads_per_wg) + " threads per workgroup)")
         elif current_saturation == 1:
