@@ -23,12 +23,12 @@ Input_Files:
 
 # # Running the scripts:
 
-amber_test_generation.py script: python3 amber_test_generation.py input_file output_file_name
+amber_test_generation.py script: `python3 amber_test_generation.py input_file output_file_name`
 
 - Note 1: the output_file_name should not end with ".amber" as the script will automatically add that extension to the provided name)
 - Note 2: Make sure configuration.py is in the same working directory as amber_test_generation.py
 
-amber_test_driver.py script: python3 amber_test_driver.py directory_of_input_files
+amber_test_driver.py script: `amber_test_driver.py [-h] [--android] input_dir num_iterations`
 
 - Note 1: Some of the paths and flags need to be edited in main() based off of where the script is being run relative to amber build 
 
