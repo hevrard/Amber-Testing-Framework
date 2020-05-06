@@ -1,0 +1,63 @@
+#!amber
+
+SET ENGINE_DATA fence_timeout_ms 20000
+
+SHADER compute test GLSL
+#version 430
+
+// Declare a SSBO with two uints. This will be used for the atomic operations.
+layout(set = 0, binding = 0) volatile buffer MSG {
+  uint idx;
+  uint msg;
+} msg;
+
+// Declare a SSBO with a runtime sized array of uints.
+layout(set = 0, binding = 1) buffer OUT_BUF { uint x[]; } out_buf;
+
+// Require a workgroup size of (1,1,1).
+layout(local_size_x = 1, local_size_y = 1, local_size_x = 1) in;
+
+void main()
+{
+	uint gid_x = gl_GlobalInvocationID.x;
+    // Wait until this invocation is signalled.
+    while (gid_x != atomicAdd(msg.msg, 0)) { }
+    
+    // Get the next output index and write this invocations
+    // id into that slot.
+    uint idx = atomicAdd(msg.idx, 1);
+    out_buf.x[idx] = gid_x;
+    
+    // Signal the next invocation (in reverse order).
+    uint next = gid_x - 1;
+    atomicExchange(msg.msg, next);
+}
+
+END
+
+# Allocate two uints in the message buffer. Initialize so that the last
+# invocation is the first to start.
+BUFFER message DATA_TYPE uint32 DATA
+0 4095
+END
+
+# Allocate a uint for every invocation.
+BUFFER out DATA_TYPE uint32 SIZE 4096 FILL 0
+
+PIPELINE compute test_pipe
+  ATTACH test
+  # Bind |message| to the shader interface |msg|.
+  BIND BUFFER message AS storage DESCRIPTOR_SET 0 BINDING 0
+  # Bind |out| to the shader interface |out_buf|.
+  BIND BUFFER out AS storage DESCRIPTOR_SET 0 BINDING 1
+END
+
+# Run 4096 workgroups. Expect this test to hang on all implementations.
+RUN test_pipe 4096 1 1
+
+# Check that every invocation has been signalled.
+EXPECT message IDX 0 EQ 4096 -1
+
+# Check that the invocations execute in reverse order.
+EXPECT out IDX 0 EQ 4095 4094 4093 4092
+

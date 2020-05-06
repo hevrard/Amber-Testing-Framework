@@ -1,0 +1,42 @@
+#!amber
+
+SET ENGINE_DATA fence_timeout_ms 20000
+
+SHADER compute test GLSL
+#version 430
+
+layout(set = 0, binding = 0) volatile buffer LOCK { uint l; } lock;
+
+layout(set = 0, binding = 1) buffer OUT_BUF { uint x[]; } out_buf;
+
+void main()
+{
+  // Wait until this invocation obtains the lock.
+  while (atomicCompSwap(lock.l, 0, 1) != 0) { }
+
+  // Release the lock.
+  atomicExchange(lock.l, 0);
+
+  // This isn't particularly interesting.
+  uint gid = gl_GlobalInvocationID.x;
+  out_buf.x[gid] = gid;
+}
+END
+
+BUFFER lock DATA_TYPE uint32 SIZE 1 FILL 0
+BUFFER out DATA_TYPE uint32 SIZE 4096 FILL 0
+
+PIPELINE compute test_pipe
+  ATTACH test
+  BIND BUFFER lock AS storage DESCRIPTOR_SET 0 BINDING 0
+  BIND BUFFER out AS storage DESCRIPTOR_SET 0 BINDING 1
+END
+
+RUN test_pipe 4096 1 1
+
+# The lock should be released at the end.
+EXPECT lock IDX 0 EQ 0
+
+# Check a few threads have written results
+EXPECT out IDX 0 EQ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+

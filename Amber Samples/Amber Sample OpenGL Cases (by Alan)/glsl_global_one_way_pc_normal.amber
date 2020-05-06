@@ -1,0 +1,65 @@
+#!amber
+
+SET ENGINE_DATA fence_timeout_ms 20000
+
+SHADER compute test GLSL
+#version 430
+
+// Declare a SSBO with two uints. This will be used for the atomic operations.
+layout(set = 0, binding = 0) volatile buffer MSG {
+  uint idx;
+  uint msg;
+} msg;
+
+// Declare a SSBO with a runtime sized array of uints.
+layout(set = 0, binding = 1) buffer OUT_BUF { uint x[]; } out_buf; // Hari: this is not necessary; more of a sanity check 
+
+// Require a workgroup size of (1,1,1).
+layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in; // Hari: This creates the number of blocks in each dimension
+
+void main()
+{
+	uint gid_x = gl_GlobalInvocationID.x; // Hari: this gets a unique ID for each thread...
+  // Wait until this invocation is signalled.
+  while (gid_x != atomicAdd(msg.msg, 0)) { } // Hari: this just adds 0 to msg, to effectively get the current value of message, since atomicAdd() returns the value of the parameter before it was updated...
+  
+  // Hari: LINE 24 will keep spinning, until each thread is "unlocked" one by one; written in a way that they will be unlocked sequentially
+  
+  // Get the next output index and write this invocations
+  // id into that slot.
+  uint idx = atomicAdd(msg.idx, 1); // Hari: updates idx, and retrieves the previous value to store into the out_buf array for a sanity check at the end of the test
+  out_buf.x[idx] = gid_x; // Hari: putting each thread ID into the appropriate spot in the out_buf array; sequentially written  
+  
+  // Signal the next invocation.
+  uint next = gid_x + 1; // Hari: 
+  atomicExchange(msg.msg, next); // gives msg.msg the value that is in next... (also, if needed, by setting atomicExchange equal to something, can get the old value of msg.msg; in this case, we don't need it)
+}
+
+END
+
+# Allocate two uints in the message buffer and initialize to zero.
+BUFFER message DATA_TYPE uint32 SIZE 2 FILL 0
+
+# Allocate a uint for every invocation.
+BUFFER out DATA_TYPE uint32 SIZE 65535 FILL 0
+
+PIPELINE compute test_pipe
+  ATTACH test
+  # Bind |message| to the shader interface |msg|.
+  BIND BUFFER message AS storage DESCRIPTOR_SET 0 BINDING 0
+  # Bind |out| to the shader interface |out_buf|.
+  BIND BUFFER out AS storage DESCRIPTOR_SET 0 BINDING 1
+END
+
+# Run 65535 workgroups
+RUN test_pipe 65535 1 1 // Hari: This allocates the number of threads per block...
+
+# Check that every invocation has been signalled.
+EXPECT message IDX 0 EQ 65535 65535 // Hari: Note that IDX is specified in bytes; it is the starting address of the items in the msg struct. SO we want to make sure that both ints are 65535 
+
+# Check that the invocations execute in order. // Hari: We want to check that the first 16 values, starting from index 0 (0 bytes) are sequentially increasing in the out_buf array; note we are assuming (hoping) rest of values are correct...
+EXPECT out IDX 0 EQ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+
+# Check that last entry is the last invocation.
+# Note that IDX is specified in bytes.
+EXPECT out IDX 262136 EQ 65534
