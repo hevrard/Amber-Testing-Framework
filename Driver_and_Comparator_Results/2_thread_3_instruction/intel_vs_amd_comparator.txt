@@ -1,5 +1,5 @@
 -------------------------------------------
-Tests that differ between Driver_and_Comparator_Results/2_thread_3_instruction/Intel/intel_final_results-2020-04-09.csv and Driver_and_Comparator_Results/2_thread_3_instruction/AMD/vega_simple_results-2020-04-20.csv
+Tests that differ between Driver_and_Comparator_Results/2_thread_3_instruction/AMD/vega_simple_results-2020-04-20.csv and Driver_and_Comparator_Results/2_thread_3_instruction/Intel/intel_simple_results-2020-04-25.csv
 -------------------------------------------
    -- Test Case: 0 (Round Robin Saturation Result)
    -- Test Case: 11 (Round Robin Saturation Result)
@@ -32,44 +32,44 @@ Tests that differ between Driver_and_Comparator_Results/2_thread_3_instruction/I
    -- Test Case: 174 (Round Robin Saturation Result)
 
 -------------------------------------------
-Tests that Driver_and_Comparator_Results/2_thread_3_instruction/Intel/intel_final_results-2020-04-09.csv passes and Driver_and_Comparator_Results/2_thread_3_instruction/AMD/vega_simple_results-2020-04-20.csv fails
--------------------------------------------
-   -- Test Case: 0 (Round Robin Saturation Result)
-   -- Test Case: 11 (Round Robin Saturation Result)
-   -- Test Case: 20 (Round Robin Saturation Result)
-   -- Test Case: 32 (Round Robin Saturation Result)
-   -- Test Case: 36 (Round Robin Saturation Result)
-   -- Test Case: 40 (Round Robin Saturation Result)
-   -- Test Case: 53 (Round Robin Saturation Result)
-   -- Test Case: 68 (No saturation Result)
-   -- Test Case: 69 (Round Robin Saturation Result)
-   -- Test Case: 75 (Round Robin Saturation Result)
-   -- Test Case: 78 (Round Robin Saturation Result)
-   -- Test Case: 84 (Round Robin Saturation Result)
-   -- Test Case: 86 (Round Robin Saturation Result)
-   -- Test Case: 93 (Round Robin Saturation Result)
-   -- Test Case: 96 (Round Robin Saturation Result)
-   -- Test Case: 100 (Round Robin Saturation Result)
-   -- Test Case: 104 (Round Robin Saturation Result)
-   -- Test Case: 110 (Round Robin Saturation Result)
-   -- Test Case: 118 (Round Robin Saturation Result)
-   -- Test Case: 135 (Round Robin Saturation Result)
-   -- Test Case: 147 (Round Robin Saturation Result)
-   -- Test Case: 150 (Round Robin Saturation Result)
-   -- Test Case: 152 (Round Robin Saturation Result)
-   -- Test Case: 153 (Round Robin Saturation Result)
-   -- Test Case: 155 (Round Robin Saturation Result)
-   -- Test Case: 162 (Round Robin Saturation Result)
-   -- Test Case: 165 (Round Robin Saturation Result)
-   -- Test Case: 172 (Round Robin Saturation Result)
-   -- Test Case: 174 (Round Robin Saturation Result)
-
--------------------------------------------
-Tests that Driver_and_Comparator_Results/2_thread_3_instruction/Intel/intel_final_results-2020-04-09.csv fails and Driver_and_Comparator_Results/2_thread_3_instruction/AMD/vega_simple_results-2020-04-20.csv passes
+Tests that Driver_and_Comparator_Results/2_thread_3_instruction/AMD/vega_simple_results-2020-04-20.csv passes and Driver_and_Comparator_Results/2_thread_3_instruction/Intel/intel_simple_results-2020-04-25.csv fails
 -------------------------------------------
    NONE
 -------------------------------------------
-Tests that both Driver_and_Comparator_Results/2_thread_3_instruction/Intel/intel_final_results-2020-04-09.csv and Driver_and_Comparator_Results/2_thread_3_instruction/AMD/vega_simple_results-2020-04-20.csv fail
+Tests that Driver_and_Comparator_Results/2_thread_3_instruction/AMD/vega_simple_results-2020-04-20.csv fails and Driver_and_Comparator_Results/2_thread_3_instruction/Intel/intel_simple_results-2020-04-25.csv passes
+-------------------------------------------
+   -- Test Case: 0 (Round Robin Saturation Result)
+   -- Test Case: 11 (Round Robin Saturation Result)
+   -- Test Case: 20 (Round Robin Saturation Result)
+   -- Test Case: 32 (Round Robin Saturation Result)
+   -- Test Case: 36 (Round Robin Saturation Result)
+   -- Test Case: 40 (Round Robin Saturation Result)
+   -- Test Case: 53 (Round Robin Saturation Result)
+   -- Test Case: 68 (No saturation Result)
+   -- Test Case: 69 (Round Robin Saturation Result)
+   -- Test Case: 75 (Round Robin Saturation Result)
+   -- Test Case: 78 (Round Robin Saturation Result)
+   -- Test Case: 84 (Round Robin Saturation Result)
+   -- Test Case: 86 (Round Robin Saturation Result)
+   -- Test Case: 93 (Round Robin Saturation Result)
+   -- Test Case: 96 (Round Robin Saturation Result)
+   -- Test Case: 100 (Round Robin Saturation Result)
+   -- Test Case: 104 (Round Robin Saturation Result)
+   -- Test Case: 110 (Round Robin Saturation Result)
+   -- Test Case: 118 (Round Robin Saturation Result)
+   -- Test Case: 135 (Round Robin Saturation Result)
+   -- Test Case: 147 (Round Robin Saturation Result)
+   -- Test Case: 150 (Round Robin Saturation Result)
+   -- Test Case: 152 (Round Robin Saturation Result)
+   -- Test Case: 153 (Round Robin Saturation Result)
+   -- Test Case: 155 (Round Robin Saturation Result)
+   -- Test Case: 162 (Round Robin Saturation Result)
+   -- Test Case: 165 (Round Robin Saturation Result)
+   -- Test Case: 172 (Round Robin Saturation Result)
+   -- Test Case: 174 (Round Robin Saturation Result)
+
+-------------------------------------------
+Tests that both Driver_and_Comparator_Results/2_thread_3_instruction/AMD/vega_simple_results-2020-04-20.csv and Driver_and_Comparator_Results/2_thread_3_instruction/Intel/intel_simple_results-2020-04-25.csv fail
 -------------------------------------------
    -- Test Case: 3 (Chunking Saturation Result)
    -- Test Case: 7 (Chunking Saturation Result)

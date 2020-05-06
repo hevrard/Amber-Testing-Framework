@@ -92,9 +92,9 @@ def main():
     csv2_headers = " ".join(data2[0])
 
     # output an error in the case that the two CSVs differ in dimension, either in their headers or number of rows
-    if csv1_headers != csv2_headers:
-        print("The two CSVs provided differ in their headers and cannot be properly compared", file=sys.stderr)
-        exit(1)
+    #if csv1_headers != csv2_headers:
+     #   print("The two CSVs provided differ in their headers and cannot be properly compared", file=sys.stderr)
+      #  exit(1)
 
     if len(data1) != len(data2):
         print("The two CSVs provided have a different number of rows and cannot be properly compared", file=sys.stderr)

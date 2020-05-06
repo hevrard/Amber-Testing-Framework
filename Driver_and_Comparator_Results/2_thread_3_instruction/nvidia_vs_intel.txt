@@ -1,0 +1,61 @@
+-------------------------------------------
+Tests that differ between Driver_and_Comparator_Results/2_thread_3_instruction/Nvidia/nvidia_simple_results-2020-04-20.csv and Driver_and_Comparator_Results/2_thread_3_instruction/Intel/intel_simple_results-2020-04-25.csv
+-------------------------------------------
+   -- Test Case: 1 (Round Robin Saturation Result)
+   -- Test Case: 53 (Round Robin Saturation Result)
+
+-------------------------------------------
+Tests that Driver_and_Comparator_Results/2_thread_3_instruction/Nvidia/nvidia_simple_results-2020-04-20.csv passes and Driver_and_Comparator_Results/2_thread_3_instruction/Intel/intel_simple_results-2020-04-25.csv fails
+-------------------------------------------
+   NONE
+-------------------------------------------
+Tests that Driver_and_Comparator_Results/2_thread_3_instruction/Nvidia/nvidia_simple_results-2020-04-20.csv fails and Driver_and_Comparator_Results/2_thread_3_instruction/Intel/intel_simple_results-2020-04-25.csv passes
+-------------------------------------------
+   -- Test Case: 1 (Round Robin Saturation Result)
+   -- Test Case: 53 (Round Robin Saturation Result)
+
+-------------------------------------------
+Tests that both Driver_and_Comparator_Results/2_thread_3_instruction/Nvidia/nvidia_simple_results-2020-04-20.csv and Driver_and_Comparator_Results/2_thread_3_instruction/Intel/intel_simple_results-2020-04-25.csv fail
+-------------------------------------------
+   -- Test Case: 3 (Chunking Saturation Result)
+   -- Test Case: 7 (Chunking Saturation Result)
+   -- Test Case: 10 (Chunking Saturation Result)
+   -- Test Case: 11 (Chunking Saturation Result)
+   -- Test Case: 15 (Chunking Saturation Result)
+   -- Test Case: 24 (Chunking Saturation Result)
+   -- Test Case: 25 (Chunking Saturation Result)
+   -- Test Case: 26 (Chunking Saturation Result)
+   -- Test Case: 30 (Chunking Saturation Result)
+   -- Test Case: 33 (Chunking Saturation Result)
+   -- Test Case: 37 (Chunking Saturation Result)
+   -- Test Case: 38 (Chunking Saturation Result)
+   -- Test Case: 40 (Chunking Saturation Result)
+   -- Test Case: 41 (Chunking Saturation Result)
+   -- Test Case: 44 (Chunking Saturation Result)
+   -- Test Case: 48 (Chunking Saturation Result)
+   -- Test Case: 49 (Chunking Saturation Result)
+   -- Test Case: 51 (Chunking Saturation Result)
+   -- Test Case: 58 (Chunking Saturation Result)
+   -- Test Case: 61 (Chunking Saturation Result)
+   -- Test Case: 65 (Chunking Saturation Result)
+   -- Test Case: 67 (Chunking Saturation Result)
+   -- Test Case: 70 (Chunking Saturation Result)
+   -- Test Case: 74 (Chunking Saturation Result)
+   -- Test Case: 77 (Chunking Saturation Result)
+   -- Test Case: 79 (Chunking Saturation Result)
+   -- Test Case: 98 (Chunking Saturation Result)
+   -- Test Case: 106 (Chunking Saturation Result)
+   -- Test Case: 109 (Chunking Saturation Result)
+   -- Test Case: 111 (Chunking Saturation Result)
+   -- Test Case: 115 (Chunking Saturation Result)
+   -- Test Case: 117 (Chunking Saturation Result)
+   -- Test Case: 119 (Chunking Saturation Result)
+   -- Test Case: 121 (Chunking Saturation Result)
+   -- Test Case: 122 (Chunking Saturation Result)
+   -- Test Case: 133 (Chunking Saturation Result)
+   -- Test Case: 134 (Chunking Saturation Result)
+   -- Test Case: 138 (Chunking Saturation Result)
+   -- Test Case: 143 (Chunking Saturation Result)
+   -- Test Case: 164 (Chunking Saturation Result)
+
+

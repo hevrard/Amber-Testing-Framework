@@ -1,0 +1,22 @@
+-------------------------------------------
+Tests that differ between Driver_and_Comparator_Results/2_thread_2_instruction/Intel/Subgroup_based_results/intel_simple_results-2020-04-26.csv and Driver_and_Comparator_Results/2_thread_2_instruction/Nvidia/Subgroup_based_results/nvidia_simple_results-2020-04-26.csv
+-------------------------------------------
+   -- Test Case: 4 (No saturation (same subgroup)
+
+-------------------------------------------
+Tests that Driver_and_Comparator_Results/2_thread_2_instruction/Intel/Subgroup_based_results/intel_simple_results-2020-04-26.csv passes and Driver_and_Comparator_Results/2_thread_2_instruction/Nvidia/Subgroup_based_results/nvidia_simple_results-2020-04-26.csv fails
+-------------------------------------------
+   NONE
+-------------------------------------------
+Tests that Driver_and_Comparator_Results/2_thread_2_instruction/Intel/Subgroup_based_results/intel_simple_results-2020-04-26.csv fails and Driver_and_Comparator_Results/2_thread_2_instruction/Nvidia/Subgroup_based_results/nvidia_simple_results-2020-04-26.csv passes
+-------------------------------------------
+   -- Test Case: 4 (No saturation (same subgroup)
+
+-------------------------------------------
+Tests that both Driver_and_Comparator_Results/2_thread_2_instruction/Intel/Subgroup_based_results/intel_simple_results-2020-04-26.csv and Driver_and_Comparator_Results/2_thread_2_instruction/Nvidia/Subgroup_based_results/nvidia_simple_results-2020-04-26.csv fail
+-------------------------------------------
+   -- Test Case: 2 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 4 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 7 (No saturation (same subgroup, 4 threads per workgroup))
+
+

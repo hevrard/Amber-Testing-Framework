@@ -1,0 +1,44 @@
+-------------------------------------------
+Tests that differ between Driver_and_Comparator_Results/2_thread_2_instruction/schedulers/HSA_results.csv and Driver_and_Comparator_Results/2_thread_2_instruction/Nvidia/nvidia_simple_results-2020-04-20.csv
+-------------------------------------------
+   -- Test Case: 0 (No saturation Result)
+   -- Test Case: 0 (Round Robin Saturation Result)
+   -- Test Case: 0 (Chunking Saturation Result)
+   -- Test Case: 1 (No saturation Result)
+   -- Test Case: 1 (Round Robin Saturation Result)
+   -- Test Case: 1 (Chunking Saturation Result)
+   -- Test Case: 2 (No saturation Result)
+   -- Test Case: 2 (Round Robin Saturation Result)
+   -- Test Case: 4 (No saturation Result)
+   -- Test Case: 4 (Round Robin Saturation Result)
+   -- Test Case: 7 (No saturation Result)
+   -- Test Case: 7 (Round Robin Saturation Result)
+
+-------------------------------------------
+Tests that Driver_and_Comparator_Results/2_thread_2_instruction/schedulers/HSA_results.csv passes and Driver_and_Comparator_Results/2_thread_2_instruction/Nvidia/nvidia_simple_results-2020-04-20.csv fails
+-------------------------------------------
+   NONE
+-------------------------------------------
+Tests that Driver_and_Comparator_Results/2_thread_2_instruction/schedulers/HSA_results.csv fails and Driver_and_Comparator_Results/2_thread_2_instruction/Nvidia/nvidia_simple_results-2020-04-20.csv passes
+-------------------------------------------
+   -- Test Case: 0 (No saturation Result)
+   -- Test Case: 0 (Round Robin Saturation Result)
+   -- Test Case: 0 (Chunking Saturation Result)
+   -- Test Case: 1 (No saturation Result)
+   -- Test Case: 1 (Round Robin Saturation Result)
+   -- Test Case: 1 (Chunking Saturation Result)
+   -- Test Case: 2 (No saturation Result)
+   -- Test Case: 2 (Round Robin Saturation Result)
+   -- Test Case: 4 (No saturation Result)
+   -- Test Case: 4 (Round Robin Saturation Result)
+   -- Test Case: 7 (No saturation Result)
+   -- Test Case: 7 (Round Robin Saturation Result)
+
+-------------------------------------------
+Tests that both Driver_and_Comparator_Results/2_thread_2_instruction/schedulers/HSA_results.csv and Driver_and_Comparator_Results/2_thread_2_instruction/Nvidia/nvidia_simple_results-2020-04-20.csv fail
+-------------------------------------------
+   -- Test Case: 2 (Chunking Saturation Result)
+   -- Test Case: 4 (Chunking Saturation Result)
+   -- Test Case: 7 (Chunking Saturation Result)
+
+

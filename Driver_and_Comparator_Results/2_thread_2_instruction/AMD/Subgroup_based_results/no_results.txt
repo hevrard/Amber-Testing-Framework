@@ -1,0 +1,1 @@
+subgroup testing put the GPU in an unrecoverable state

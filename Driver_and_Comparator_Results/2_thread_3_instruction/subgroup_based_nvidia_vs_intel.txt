@@ -1,0 +1,59 @@
+-------------------------------------------
+Tests that differ between Driver_and_Comparator_Results/2_thread_3_instruction/Intel/Subgroup_based_results/intel_simple_results-2020-04-29.csv and Driver_and_Comparator_Results/2_thread_3_instruction/Nvidia/Subgroup_based_results/nvidia_simple_results-2020-04-29.csv
+-------------------------------------------
+   -- Test Case: 58 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 70 (No saturation (same subgroup, 4 threads per workgroup))
+
+-------------------------------------------
+Tests that Driver_and_Comparator_Results/2_thread_3_instruction/Intel/Subgroup_based_results/intel_simple_results-2020-04-29.csv passes and Driver_and_Comparator_Results/2_thread_3_instruction/Nvidia/Subgroup_based_results/nvidia_simple_results-2020-04-29.csv fails
+-------------------------------------------
+   -- Test Case: 58 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 70 (No saturation (same subgroup, 4 threads per workgroup))
+
+-------------------------------------------
+Tests that Driver_and_Comparator_Results/2_thread_3_instruction/Intel/Subgroup_based_results/intel_simple_results-2020-04-29.csv fails and Driver_and_Comparator_Results/2_thread_3_instruction/Nvidia/Subgroup_based_results/nvidia_simple_results-2020-04-29.csv passes
+-------------------------------------------
+   NONE
+-------------------------------------------
+Tests that both Driver_and_Comparator_Results/2_thread_3_instruction/Intel/Subgroup_based_results/intel_simple_results-2020-04-29.csv and Driver_and_Comparator_Results/2_thread_3_instruction/Nvidia/Subgroup_based_results/nvidia_simple_results-2020-04-29.csv fail
+-------------------------------------------
+   -- Test Case: 3 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 7 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 10 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 11 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 15 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 24 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 25 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 26 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 30 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 33 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 37 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 38 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 40 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 41 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 44 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 48 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 49 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 51 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 61 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 65 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 67 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 74 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 77 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 79 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 98 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 106 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 109 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 111 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 115 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 117 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 119 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 121 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 122 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 133 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 134 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 138 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 143 (No saturation (same subgroup, 4 threads per workgroup))
+   -- Test Case: 164 (No saturation (same subgroup, 4 threads per workgroup))
+
+

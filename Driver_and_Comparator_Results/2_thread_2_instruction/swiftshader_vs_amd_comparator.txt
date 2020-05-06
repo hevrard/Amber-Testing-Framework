@@ -1,0 +1,24 @@
+-------------------------------------------
+Tests that differ between Driver_and_Comparator_Results/2_thread_2_instruction/Swift_Shader/swift_simple_results-2020-05-5.csv and Driver_and_Comparator_Results/2_thread_2_instruction/AMD/vega_simple_results-2020-04-09.csv
+-------------------------------------------
+   -- Test Case: 0 (Round Robin Saturation)
+   -- Test Case: 1 (Round Robin Saturation)
+
+-------------------------------------------
+Tests that Driver_and_Comparator_Results/2_thread_2_instruction/Swift_Shader/swift_simple_results-2020-05-5.csv passes and Driver_and_Comparator_Results/2_thread_2_instruction/AMD/vega_simple_results-2020-04-09.csv fails
+-------------------------------------------
+   -- Test Case: 0 (Round Robin Saturation)
+   -- Test Case: 1 (Round Robin Saturation)
+
+-------------------------------------------
+Tests that Driver_and_Comparator_Results/2_thread_2_instruction/Swift_Shader/swift_simple_results-2020-05-5.csv fails and Driver_and_Comparator_Results/2_thread_2_instruction/AMD/vega_simple_results-2020-04-09.csv passes
+-------------------------------------------
+   NONE
+-------------------------------------------
+Tests that both Driver_and_Comparator_Results/2_thread_2_instruction/Swift_Shader/swift_simple_results-2020-05-5.csv and Driver_and_Comparator_Results/2_thread_2_instruction/AMD/vega_simple_results-2020-04-09.csv fail
+-------------------------------------------
+   -- Test Case: 2 (Chunking Saturation)
+   -- Test Case: 4 (Chunking Saturation)
+   -- Test Case: 7 (Chunking Saturation)
+
+

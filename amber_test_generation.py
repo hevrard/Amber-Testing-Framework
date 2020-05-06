@@ -177,7 +177,7 @@ def handle_atomic_exchange_branch(output, check_value, exchange_value, instructi
     # perform the operation either at a single memory location or indexed memory location, depending on saturation level
     if saturation_level == 0:
         # determine whether to write to memory location x or memory location y
-        if memory_location == 0:
+        if int(memory_location) == 0:
             output.write("\t\tif (atomicExchange(test.x, " + exchange_value + ") == " + check_value + ") { \n")
         else:
             output.write("\t\tif (atomicExchange(test.y, " + exchange_value + ") == " + check_value + ") { \n")
@@ -214,7 +214,7 @@ def handle_amber_check_branch(output, check_value, instruction_address, number_o
     # perform the operation either at a single memory location or indexed memory location, depending on saturation level
     if saturation_level == 0:
         # determine whether to write to memory location x or memory location y
-        if memory_location == 0:
+        if int(memory_location) == 0:
             output.write("\t\tif (atomicAdd(test.x, 0) == " + check_value + " ) { \n")
         else:
             output.write("\t\tif (atomicAdd(test.y, 0) == " + check_value + " ) { \n")
@@ -248,7 +248,7 @@ def handle_atomic_store(output, write_value, saturation_level, memory_location):
     # perform the operation either at a single memory location or indexed memory location, depending on saturation level
     if saturation_level == 0:
         # determine whether to write to memory location x or memory location y
-        if memory_location == 0:
+        if int(memory_location) == 0:
             output.write("\t\tatomicExchange(test.x, " + write_value + ");\n")
         else:
             output.write("\t\tatomicExchange(test.y, " + write_value + ");\n")

@@ -1,0 +1,22 @@
+-------------------------------------------
+Tests that differ between Driver_and_Comparator_Results/2_thread_2_instruction/Pixel/simple_final_results-2020-05-04.csv and Driver_and_Comparator_Results/2_thread_2_instruction/AMD/vega_simple_results-2020-04-09.csv
+-------------------------------------------
+   NONE
+-------------------------------------------
+Tests that Driver_and_Comparator_Results/2_thread_2_instruction/Pixel/simple_final_results-2020-05-04.csv passes and Driver_and_Comparator_Results/2_thread_2_instruction/AMD/vega_simple_results-2020-04-09.csv fails
+-------------------------------------------
+   NONE
+-------------------------------------------
+Tests that Driver_and_Comparator_Results/2_thread_2_instruction/Pixel/simple_final_results-2020-05-04.csv fails and Driver_and_Comparator_Results/2_thread_2_instruction/AMD/vega_simple_results-2020-04-09.csv passes
+-------------------------------------------
+   NONE
+-------------------------------------------
+Tests that both Driver_and_Comparator_Results/2_thread_2_instruction/Pixel/simple_final_results-2020-05-04.csv and Driver_and_Comparator_Results/2_thread_2_instruction/AMD/vega_simple_results-2020-04-09.csv fail
+-------------------------------------------
+   -- Test Case: 0 (Round Robin Saturation)
+   -- Test Case: 1 (Round Robin Saturation)
+   -- Test Case: 2 (Chunking Saturation)
+   -- Test Case: 4 (Chunking Saturation)
+   -- Test Case: 7 (Chunking Saturation)
+
+
