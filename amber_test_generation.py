@@ -7,7 +7,7 @@ import re
 from configuration import Configuration
 
 # default Configuration object to be used in the Amber test generation
-default_config = Configuration(timeout=20000, workgroups=65532, threads_per_workgroup=1, saturation_level=2, subgroup=0)
+default_config = Configuration(timeout=20000, workgroups=65532, threads_per_workgroup=1, saturation_level=0, subgroup=0)
 
 
 # write the necessary "boiler plate" code to generate an Amber test, along with Shader
@@ -118,7 +118,8 @@ def write_amber_thread_program(output, thread_instructions, thread_number, numbe
 
     # iterate over each instruction assigned to the specific thread and generate the test case
     for instruc_id, instruction in enumerate(thread_instructions):
-        write_amber_thread_instruction(output, instruction, instruc_id, number_of_testing_threads, saturation_level)
+        write_amber_thread_instruction(output, instruction, instruc_id, number_of_testing_threads, saturation_level,
+                                       program_end)
 
     output.write("\t  case " + str(program_end) + ":\n")
     output.write("\t\tterminate = 1;\n")
@@ -132,7 +133,8 @@ def write_amber_thread_program(output, thread_instructions, thread_number, numbe
 
 # write the appropriate test cases for each instruction based off of the instruction id, number of instructions, and
 # type of saturation
-def write_amber_thread_instruction(output, instruction, instruc_id, num_of_testing_threads, saturation_level):
+def write_amber_thread_instruction(output, instruction, instruc_id, num_of_testing_threads, saturation_level,
+                                   program_end):
     pattern = "\\((.+?)\\)"
     search_pattern = re.search(pattern, instruction)
     numerical_representation = " "
@@ -153,16 +155,16 @@ def write_amber_thread_instruction(output, instruction, instruc_id, num_of_testi
         check_value = numerical_representation[1]
         exchange_value = numerical_representation[2]
         instruction_address = numerical_representation[3]
-        handle_atomic_exchange_branch(output, check_value, exchange_value, instruction_address, num_of_testing_threads,
-                                      saturation_level, memory_location)
+        handle_atomic_exchange_branch(output, check_value, exchange_value, instruction_address,
+                                      saturation_level, memory_location, program_end)
 
     # extract the appropriate values for an atomic exchange branch from the numerical_representation of the instruction
     # and call handle_amber_check_branch
     elif instruction.startswith("atomic_chk_branch"):
         check_value = numerical_representation[1]
         instruction_address = numerical_representation[2]
-        handle_amber_check_branch(output, check_value, instruction_address, num_of_testing_threads, saturation_level,
-                                  memory_location)
+        handle_amber_check_branch(output, check_value, instruction_address, saturation_level,
+                                  memory_location, program_end)
 
     # extract the appropriate values for an atomic exchange branch from the numerical_representation of the instruction
     # and call handle_atomic_store
@@ -172,8 +174,8 @@ def write_amber_thread_instruction(output, instruction, instruc_id, num_of_testi
 
 
 # write the amber test code for an atomic exchange branch instruction
-def handle_atomic_exchange_branch(output, check_value, exchange_value, instruction_address, number_of_testing_threads,
-                                  saturation_level, memory_location):
+def handle_atomic_exchange_branch(output, check_value, exchange_value, instruction_address, saturation_level,
+                                  memory_location, program_end):
     # perform the operation either at a single memory location or indexed memory location, depending on saturation level
     if saturation_level == 0:
         # determine whether to write to memory location x or memory location y
@@ -192,7 +194,7 @@ def handle_atomic_exchange_branch(output, check_value, exchange_value, instructi
                          ") { \n")
 
     if instruction_address == "END":
-        output.write("\t\t   pc = " + str(number_of_testing_threads) + ";\n")
+        output.write("\t\t   pc = " + str(program_end) + ";\n")
     elif instruction_address != "END":
         output.write("\t\t   pc = " + instruction_address + ";\n")
     else:
@@ -208,8 +210,7 @@ def handle_atomic_exchange_branch(output, check_value, exchange_value, instructi
 
 
 # write the amber test code for an atomic check branch instruction
-def handle_amber_check_branch(output, check_value, instruction_address, number_of_testing_threads, saturation_level,
-                              memory_location):
+def handle_amber_check_branch(output, check_value, instruction_address, saturation_level, memory_location, program_end):
 
     # perform the operation either at a single memory location or indexed memory location, depending on saturation level
     if saturation_level == 0:
@@ -227,7 +228,6 @@ def handle_amber_check_branch(output, check_value, instruction_address, number_o
             output.write("\t\tif (atomicAdd(out_buf2.y[index], 0) == " + check_value + " ) { \n")
 
     if instruction_address == "END":
-        program_end = int(number_of_testing_threads)
         output.write("\t\t   pc = " + str(program_end) + ";\n")
     elif instruction_address != "END":
         output.write("\t\t   pc = " + instruction_address + ";\n")

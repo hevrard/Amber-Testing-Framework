@@ -37,10 +37,10 @@ Test File Name,No Saturation,Round Robin Saturation,Chunking Saturation,All Pass
 35,P,P,F (5/5),F
 36,P,P,F (5/5),F
 37,P,P,F (5/5),F
-38,F (5/5),F (5/5),F (5/5),F
-39,P,F (5/5),F (5/5),F
-40,F (5/5),F (5/5),F (5/5),F
-41,F (5/5),F (5/5),F (5/5),F
+38,P,P,F (5/5),F
+39,P,P,F (5/5),F
+40,P,P,F (5/5),F
+41,P,P,F (5/5),F
 42,P,P,F (5/5),F
 43,P,P,F (5/5),F
 44,P,P,F (5/5),F
@@ -81,12 +81,12 @@ Test File Name,No Saturation,Round Robin Saturation,Chunking Saturation,All Pass
 79,P,P,P,P
 80,P,P,F (5/5),F
 81,P,P,P,P
-82,F (5/5),F (5/5),F (5/5),F
-83,P,F (5/5),P,F
-84,F (5/5),F (5/5),F (5/5),F
-85,F (5/5),F (5/5),F (5/5),F
-86,F (5/5),F (5/5),F (5/5),F
-87,P,F (5/5),F (5/5),F
+82,P,P,F (5/5),F
+83,P,P,P,P
+84,P,F (5/5),F (5/5),F
+85,P,F (5/5),F (5/5),F
+86,P,P,F (5/5),F
+87,P,P,P,P
 88,P,P,P,P
 89,P,P,F (5/5),F
 90,P,P,F (5/5),F
@@ -105,8 +105,8 @@ Test File Name,No Saturation,Round Robin Saturation,Chunking Saturation,All Pass
 103,P,P,F (5/5),F
 104,P,P,F (5/5),F
 105,P,P,F (5/5),F
-106,F (5/5),F (5/5),F (5/5),F
-107,F (5/5),F (5/5),F (5/5),F
+106,P,F (5/5),F (5/5),F
+107,P,F (5/5),F (5/5),F
 108,P,P,F (5/5),F
 109,P,P,F (5/5),F
 110,P,P,P,P
@@ -115,8 +115,8 @@ Test File Name,No Saturation,Round Robin Saturation,Chunking Saturation,All Pass
 113,P,P,P,P
 114,P,P,F (5/5),F
 115,P,P,P,P
-116,F (1/5),F (5/5),P,F
-117,F (5/5),F (5/5),F (5/5),F
+116,P,P,P,P
+117,P,P,P,P
 118,P,P,P,P
 119,P,P,P,P
 120,P,P,P,P
@@ -127,10 +127,10 @@ Test File Name,No Saturation,Round Robin Saturation,Chunking Saturation,All Pass
 125,P,P,P,P
 126,P,P,P,P
 127,P,P,F (5/5),F
-128,P,F (5/5),P,F
-129,F (5/5),F (5/5),F (5/5),F
-130,P,F (5/5),F (5/5),F
-131,F (5/5),F (5/5),F (5/5),F
+128,P,P,P,P
+129,P,P,F (5/5),F
+130,P,P,F (5/5),F
+131,P,P,P,P
 132,P,P,F (5/5),F
 133,P,P,P,P
 134,P,P,P,P
@@ -145,12 +145,12 @@ Test File Name,No Saturation,Round Robin Saturation,Chunking Saturation,All Pass
 143,P,P,F (5/5),F
 144,P,P,F (5/5),F
 145,P,P,P,P
-146,P,F (5/5),F (5/5),F
-147,F (5/5),F (5/5),F (5/5),F
+146,P,P,F (5/5),F
+147,P,P,F (5/5),F
 148,P,P,F (5/5),F
 149,P,P,F (5/5),F
-150,F (5/5),F (5/5),F (5/5),F
-151,F (5/5),F (5/5),F (5/5),F
+150,P,P,F (5/5),F
+151,P,P,F (5/5),F
 152,P,P,F (5/5),F
 153,P,P,F (5/5),F
 154,P,P,F (5/5),F
@@ -165,11 +165,11 @@ Test File Name,No Saturation,Round Robin Saturation,Chunking Saturation,All Pass
 163,P,P,F (5/5),F
 164,P,P,F (5/5),F
 165,P,P,F (5/5),F
-166,F (5/5),F (5/5),F (5/5),F
-167,F (5/5),F (5/5),F (5/5),F
+166,P,P,F (5/5),F
+167,P,P,F (5/5),F
 168,P,P,P,P
 169,P,P,P,P
 170,P,P,P,P
 171,P,P,P,P
 172,P,P,P,P
-Total failures:,18,24,121,124
+Total failures:,0,4,118,118
