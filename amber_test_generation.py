@@ -186,7 +186,7 @@ def handle_atomic_exchange_branch(output, check_value, exchange_value, instructi
 
     elif saturation_level == 1 or saturation_level == 2:
         # determine whether to write to memory location x[] or memory location y[]
-        if memory_location == 0:
+        if int(memory_location) == 0:
             output.write("\t\tif (atomicExchange(out_buf1.x[index], " + exchange_value + ") ==  " + check_value +
                          ") { \n")
         else:
@@ -222,7 +222,7 @@ def handle_amber_check_branch(output, check_value, instruction_address, saturati
 
     elif saturation_level == 1 or saturation_level == 2:
         # determine whether to write to memory location x[] or memory location y[]
-        if memory_location == 0:
+        if int(memory_location) == 0:
             output.write("\t\tif (atomicAdd(out_buf1.x[index], 0) == " + check_value + " ) { \n")
         else:
             output.write("\t\tif (atomicAdd(out_buf2.y[index], 0) == " + check_value + " ) { \n")
@@ -255,7 +255,7 @@ def handle_atomic_store(output, write_value, saturation_level, memory_location):
 
     elif saturation_level == 1 or saturation_level == 2:
         # determine whether to write to memory location x[] or memory location y[]
-        if memory_location == 0:
+        if int(memory_location) == 0:
             output.write("\t\tatomicExchange(out_buf1.x[index], " + write_value + ");\n")
         else:
             output.write("\t\tatomicExchange(out_buf2.y[index], " + write_value + ");\n")
