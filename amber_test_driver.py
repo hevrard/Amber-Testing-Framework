@@ -235,7 +235,7 @@ def format_output_results(final_simple_results, final_verbose_results, all_confi
         if current_saturation == 0:
             if subgroup_setting == 0:
                 if threads_per_wg == 1:
-                    headers.append("No saturation (same subgroup")
+                    headers.append("No saturation (same subgroup)")
                 else:
                     headers.append("No saturation (same subgroup, " + str(threads_per_wg) + " threads per workgroup)")
             elif subgroup_setting == 1:
