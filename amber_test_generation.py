@@ -1,7 +1,9 @@
 #
 # amber_test_generation.py # Author: Hari Raval #
 
-import sys import re from configuration import Configuration
+import sys
+import re
+from configuration import Configuration
 
 # Configuration object to be used in the Amber test generation
 
