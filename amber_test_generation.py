@@ -1,12 +1,34 @@
-# -----------------------------------------------------------------------
-# amber_test_generation.py
-# Author: Hari Raval
-# -----------------------------------------------------------------------
-import sys
-import re
-from configuration import Configuration
+#
+-----------------------------------------------------------------------
+# amber_test_generation.py # Author: Hari Raval #
+-----------------------------------------------------------------------
+import sys import re from configuration import Configuration
 
-# default Configuration object to be used in the Amber test generation
+# Configuration object to be used in the Amber test generation
+
+# Notes: saturation_level describes the heuristic of running many
+# instances of the same test in the same kernel. Each instance of the
+# test operate on distinct memory. There are 3 options for saturation
+# that dictate how threads are mapped to test instances. NOTE THAT
+# SATURATION IS NOT CURRENTLY CURRENTLY SUPPORTED FOR INTRA-WORKGROUP
+# AND INTRA-SUBGROUP TESTS:
+# The saturation_level can be set to:
+
+# 0 - no saturation
+
+# 1 - Round Robin: threads are assigned to test instances in a round robin fasion
+
+# 2 - Chunking: threads are assigned to test instances in a course
+# grained chunk (first N threads are assigned to testing thread 0,
+# second N threads are assigned to testing thread 1, etc.
+
+# Workgroups is the max supported number across a variety of GPUs
+# (65532). Timeout is how many milliseconds to wait until killing the
+# kernel (20 seconds). threads_per_workgroup is set to 1 so that each
+# test goes across workgroups. Increasing this will allow
+# intra-workgroup behavior to be tested, but can mess up saturation
+# hueristics. subgroup will include the GLSL subgroup extension and
+# ensure that testing threads are in different subgroups.
 default_config = Configuration(timeout=20000, workgroups=65532, threads_per_workgroup=1, saturation_level=0, subgroup=0)
 
 
