@@ -1,4 +1,4 @@
-Test File Name,No saturation (same subgroup,"No saturation (diff. subgroup, 256 threads per workgroup)","No saturation (same subgroup, 4 threads per workgroup)",All Passed
+Test File Name,No saturation (same subgroup),"No saturation (diff. subgroup, 256 threads per workgroup)","No saturation (same subgroup, 4 threads per workgroup)",All Passed
 0,P,P,F,F
 1,P,P,F,F
 2,P,P,F,F
