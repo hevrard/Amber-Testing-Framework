@@ -6,6 +6,7 @@
 import argparse
 import os
 import sys
+import re
 import csv
 import socket  # to get hostname
 import subprocess
@@ -70,7 +71,8 @@ def run_amber_test(input_dir, output_dir, each_cfg_option, amber_build_path, amb
                 # push test file on the device
                 os.system("adb push " + output_file_name + " /data/local/tmp/")
                 # prepare the specific run command to run amber on-device
-                run__test = "timeout -k 1 5 adb shell 'cd /data/local/tmp ; ./amber_ndk " + amber_build_flags + " " + os.path.basename(output_file_name) + "' >> temp_results.txt"
+                run__test = "timeout -k 1 5 adb shell 'cd /data/local/tmp ; ./amber_ndk " + amber_build_flags + " " + os.path.basename(
+                    output_file_name) + "' >> temp_results.txt"
             for i in range(int(num_iter)):
                 log_print("running test: " + output_file_name)
                 log_print(run__test)
@@ -330,10 +332,15 @@ def format_html_table_output(final_simple_results, output_dir, headers, td):
     colored_data_rows = []
 
     # color each cell of data according to the result status (pass = green, fail = red)
-    for curr_line in data_rows:
+    for row, curr_line in enumerate(data_rows):
         curr_line_list = curr_line.split(" ")
         while "" in curr_line_list:
             curr_line_list.remove("")
+
+        if row < (len(data_rows) - 1):
+            href = "https://www.cs.princeton.edu/~ls24/testExplorer.html?threads=" + input_test_type[0] + "&instructions=" + input_test_type[1] + "&test=" + str(row)
+            curr_line_list[0] = '<tr><td><a href="' + href + '">' + str(row) + '</a>'
+
         for index, item in enumerate(curr_line_list):
             if "P" in item:
                 curr_line_list[index] = '<td bgcolor="#009900">P'
@@ -405,7 +412,8 @@ def android_sanity_check():
     try:
         subprocess.run(["adb", "shell", "test -f /data/local/tmp/amber_ndk"], timeout=5, check=True)
     except:
-        print("Error: on Android device, /data/local/tmp/amber_ndk was not found. Please install Amber at this precise location.")
+        print(
+            "Error: on Android device, /data/local/tmp/amber_ndk was not found. Please install Amber at this precise location.")
         exit(1)
 
 
@@ -415,7 +423,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('input_dir', help='Path to input directory containing test in text format')
     parser.add_argument('num_iterations', type=int, help='Number of iteration to run each test')
-    parser.add_argument('--android', action='store_true', help='Run on Android device. Assumes a single Android device is connected, accessible with adb, and with amber already installed as /data/local/tmp/amber_ndk')
+    parser.add_argument('--android', action='store_true',
+                        help='Run on Android device. Assumes a single Android device is connected, accessible with adb, and with amber already installed as /data/local/tmp/amber_ndk')
     args = parser.parse_args()
 
     if args.android:
@@ -424,6 +433,12 @@ def main():
     start = time.time()
 
     input_dir = args.input_dir
+
+    global input_test_type
+    input_test_type = re.findall(r'\d+', str(input_dir))
+    if len(input_test_type) != 2:
+        input_test_type = ['X', 'X']
+
     num_iterations = args.num_iterations
 
     # the user must input the location of the directory where the .amber files will reside
@@ -454,7 +469,7 @@ def main():
         os.system("vulkaninfo > " + vulkan_info)
 
     if args.android:
-        amber_build_path = ""   # ignored anyway
+        amber_build_path = ""  # ignored anyway
     else:
         amber_build_path = find_amber() + " "
 
@@ -468,10 +483,11 @@ def main():
     diff_workgroup_cfg = Configuration(timeout=2000, workgroups=65532, threads_per_workgroup=4, saturation_level=0,
                                        subgroup=0)
 
-    all_config_variants = [default_cfg, diff_subgroup_cfg, diff_workgroup_cfg]
+    all_config_variants = [default_cfg, round_r_cfg, chunk_cfg, diff_subgroup_cfg, diff_workgroup_cfg]
 
     # call the main driver function
-    amber_driver(all_config_variants, input_dir, output_dir_path, amber_build_path, amber_build_flags, num_iterations, args.android)
+    amber_driver(all_config_variants, input_dir, output_dir_path, amber_build_path, amber_build_flags, num_iterations,
+                 args.android)
     end = time.time()
     log_print("")
     log_print("Execution time (s):")

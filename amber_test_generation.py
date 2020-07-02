@@ -1,5 +1,6 @@
 #
-# amber_test_generation.py # Author: Hari Raval #
+# amber_test_generation.py
+# Author: Hari Raval #
 
 import sys
 import re
